@@ -1,5 +1,5 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { Link, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
+import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
 import { ArticlePreview } from "~/components/article/article-preview";
 import { getGlobalArticles, getTags } from "~/components/services/article-service";
@@ -20,6 +20,7 @@ export async function loader({ request }: LoaderArgs) {
 
 function ArticleOverview() {
   const { articles, tags, currentPageNumber, activeTag } = useLoaderData<typeof loader>();
+
   return (
     <div className="row">
       <div className="col-md-9">
@@ -55,7 +56,12 @@ function ArticleOverview() {
             .fill(null)
             .map((_, i) => (
               <li className={`page-item  ${i == currentPageNumber - 1 ? "active" : ""}`} key={i}>
-                <Link className="page-link" style={{ cursor: "pointer" }} to={`/?tag=${activeTag}&page=${i + 1}`}>
+                <Link
+                  prefetch="intent"
+                  className="page-link"
+                  style={{ cursor: "pointer" }}
+                  to={`/?tag=${activeTag}&page=${i + 1}`}
+                >
                   {i + 1}
                 </Link>
               </li>
@@ -69,6 +75,7 @@ function ArticleOverview() {
           <div className="tag-list">
             {tags.map((tag) => (
               <Link
+                prefetch="intent"
                 className="tag-pill tag-default"
                 style={{ cursor: "pointer" }}
                 key={tag}
@@ -108,6 +115,7 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  const { pathname, search } = useLocation();
 
   if (isRouteErrorResponse(error)) {
     return (
@@ -123,7 +131,7 @@ export function ErrorBoundary() {
   return (
     <Index>
       <div>Error: {errorMessage}</div>
-      <Link to="/">{"Please refresh page"}</Link>
+      <Link to={pathname + search}>{"Please retry"}</Link>
     </Index>
   );
 }

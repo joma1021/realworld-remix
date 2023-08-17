@@ -8,13 +8,13 @@ export async function getTags(): Promise<string[]> {
   try {
     const response = await fetch(`${BASE_URL}/tags`, { method: "GET" });
     if (!response.ok) {
-      return Promise.reject(response.statusText);
+      throw Error(response.statusText);
     }
     console.log("FETCH tags resolved");
     const data = await response.json();
     return data.tags;
   } catch (e) {
-    return Promise.reject("Error occurred while fetching data");
+    throw Error("Error occurred while fetching data");
   }
 }
 export async function getGlobalArticles(tag: string, page: number): Promise<ArticlesDTO> {
@@ -43,6 +43,7 @@ export async function getGlobalArticles(tag: string, page: number): Promise<Arti
     console.log("FETCH articles resolved");
     return await response.json();
   } catch (e) {
+    console.log(e);
     throw Error("Error occurred while fetching data");
   }
 }
