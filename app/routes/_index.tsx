@@ -1,10 +1,90 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { Link, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
+import type { PropsWithChildren } from "react";
+import { ArticlePreview } from "~/components/article/article-preview";
+import { getGlobalArticles, getTags } from "~/components/services/article-service";
+import type { ArticleData } from "~/models/article";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "New Remix App" }, { name: "description", content: "Welcome to Remix!" }];
 };
 
-export default function Index() {
+export async function loader({ request }: LoaderArgs) {
+  const url = new URL(request.url);
+  const currentPage = url.searchParams.get("page") ?? "1";
+  const activeTag = url.searchParams.get("tag") ?? "";
+  const currentPageNumber = Number(currentPage);
+  const [articles, tags] = await Promise.all([getGlobalArticles(activeTag, Number(currentPageNumber)), getTags()]);
+  return { articles, tags, currentPageNumber, activeTag };
+}
+
+function ArticleOverview() {
+  const { articles, tags, currentPageNumber, activeTag } = useLoaderData<typeof loader>();
+  return (
+    <div className="row">
+      <div className="col-md-9">
+        <div className="feed-toggle">
+          <ul className="nav nav-pills outline-active">
+            <li className="nav-item">
+              <a className="nav-link" href="">
+                Your Feed
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link active" href="">
+                Global Feed
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          {articles.articles.length == 0 ? (
+            <div>No articles are here... yet.</div>
+          ) : (
+            <ul>
+              {(articles.articles as ArticleData[]).map((article) => (
+                <ArticlePreview article={article} key={article.slug} />
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <ul className="pagination">
+          {Array(Math.ceil(articles.articlesCount / 10))
+            .fill(null)
+            .map((_, i) => (
+              <li className={`page-item  ${i == currentPageNumber - 1 ? "active" : ""}`} key={i}>
+                <Link className="page-link" style={{ cursor: "pointer" }} to={`/?tag=${activeTag}&page=${i + 1}`}>
+                  {i + 1}
+                </Link>
+              </li>
+            ))}
+        </ul>
+      </div>
+      <div className="col-md-3">
+        <div className="sidebar">
+          <p>Popular Tags</p>
+
+          <div className="tag-list">
+            {tags.map((tag) => (
+              <Link
+                className="tag-pill tag-default"
+                style={{ cursor: "pointer" }}
+                key={tag}
+                to={`/?tag=${tag}&page=${1}`}
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Index({ children }: PropsWithChildren) {
   return (
     <div className="home-page">
       <div className="banner">
@@ -13,125 +93,37 @@ export default function Index() {
           <p>A place to share your knowledge.</p>
         </div>
       </div>
-
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-9">
-            <div className="feed-toggle">
-              <ul className="nav nav-pills outline-active">
-                <li className="nav-item">
-                  <a className="nav-link" href="">
-                    Your Feed
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link active" href="">
-                    Global Feed
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="/profile/eric-simons">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" />
-                </a>
-                <div className="info">
-                  <a href="/profile/eric-simons" className="author">
-                    Eric Simons
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
-              </div>
-              <a href="/article/how-to-build-webapps-that-scale" className="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">realworld</li>
-                  <li className="tag-default tag-pill tag-outline">implementations</li>
-                </ul>
-              </a>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="/profile/albert-pai">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-                </a>
-                <div className="info">
-                  <a href="/profile/albert-pai" className="author">
-                    Albert Pai
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
-              </div>
-              <a href="/article/the-song-you" className="preview-link">
-                <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">realworld</li>
-                  <li className="tag-default tag-pill tag-outline">implementations</li>
-                </ul>
-              </a>
-            </div>
-
-            <ul className="pagination">
-              <li className="page-item active">
-                <a className="page-link" href="">
-                  1
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="">
-                  2
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="col-md-3">
-            <div className="sidebar">
-              <p>Popular Tags</p>
-
-              <div className="tag-list">
-                <a href="" className="tag-pill tag-default">
-                  programming
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  javascript
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  emberjs
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  angularjs
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  react
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  mean
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  node
-                </a>
-                <a href="" className="tag-pill tag-default">
-                  rails
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="container page">{children}</div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Index>
+      <ArticleOverview />
+    </Index>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Index>
+        <div>
+          Error: {error.status} {error.statusText}
+        </div>
+      </Index>
+    );
+  }
+
+  const errorMessage = error instanceof Error ? error.message : "Unknown error";
+  return (
+    <Index>
+      <div>Error: {errorMessage}</div>
+      <Link to="/">{"Please refresh page"}</Link>
+    </Index>
   );
 }
