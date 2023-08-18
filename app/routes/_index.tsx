@@ -1,10 +1,10 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext, type PropsWithChildren } from "react";
-import { getGlobalArticles, getTags } from "~/services/article-service";
+import { getGlobalArticles, getTags, getYourArticles } from "~/services/article-service";
 import TagNavbar from "~/components/tag/tag-navbar";
 import { ArticleList } from "~/components/article/article-list";
-import { getToken } from "~/session.server";
+import { getToken, getUserSessionData } from "~/session.server";
 import { UserContext } from "~/components/auth/auth-provider";
 
 export const meta: V2_MetaFunction = () => {
@@ -13,23 +13,37 @@ export const meta: V2_MetaFunction = () => {
 
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
-  const token = await getToken(request);
+  const userSession = await getUserSessionData(request);
   const currentPage = url.searchParams.get("page") ?? "1";
-  const activeTag = url.searchParams.get("tag") ?? "";
+  const filter = url.searchParams.get("filter") ?? (userSession.isLoggedIn ? "your" : "global");
   const currentPageNumber = Number(currentPage);
-  const [articles, tags] = await Promise.all([
-    getGlobalArticles(activeTag, Number(currentPageNumber), token),
-    getTags(),
-  ]);
-  return { articles, tags, currentPageNumber, activeTag };
+  console.log(filter);
+
+  switch (filter) {
+    case "your": {
+      const token = await getToken(request);
+      const [articles, tags] = await Promise.all([getYourArticles(token, Number(currentPageNumber)), getTags()]);
+      return { articles, tags, currentPageNumber, filter };
+    }
+
+    case "global": {
+      const [articles, tags] = await Promise.all([getGlobalArticles(Number(currentPageNumber)), getTags()]);
+      return { articles, tags, currentPageNumber, filter };
+    }
+
+    default: {
+      const [articles, tags] = await Promise.all([getGlobalArticles(Number(currentPageNumber), filter), getTags()]);
+      return { articles, tags, currentPageNumber, filter };
+    }
+  }
 }
 
 function ArticleOverview() {
-  const { articles, tags, currentPageNumber, activeTag } = useLoaderData<typeof loader>();
+  const { articles, tags, currentPageNumber, filter } = useLoaderData<typeof loader>();
 
   return (
     <div className="row">
-      <ArticleList articles={articles} currentPageNumber={currentPageNumber} activeTag={activeTag} />
+      <ArticleList articles={articles} currentPageNumber={currentPageNumber} filter={filter} />
       <TagNavbar tags={tags} />
     </div>
   );

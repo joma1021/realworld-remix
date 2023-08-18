@@ -1,35 +1,40 @@
 import { Link } from "@remix-run/react";
 import type { ArticleData, ArticlesDTO } from "~/models/article";
 import { ArticlePreview } from "./article-preview";
+import { UserContext } from "../auth/auth-provider";
+import { useContext } from "react";
 
 export function ArticleList({
   articles,
   currentPageNumber,
-  activeTag,
+  filter,
 }: {
   articles: ArticlesDTO;
   currentPageNumber: number;
-  activeTag: string;
+  filter: string;
 }) {
+  const userSession = useContext(UserContext);
   return (
     <div className="col-md-9">
       <div className="feed-toggle">
         <ul className="nav nav-pills outline-active">
+          {userSession.isLoggedIn && (
+            <li className="nav-item">
+              <Link className={`nav-link ${filter == "your" ? "active" : ""}`} to="/?filter=your">
+                Your Feed
+              </Link>
+            </li>
+          )}
           <li className="nav-item">
-            <Link className={`nav-link `} to="">
-              Your Feed
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className={`nav-link ${activeTag == "" ? "active" : ""}`} to="/">
+            <Link className={`nav-link ${filter === "global" ? "active" : ""}`} to="/?filter=global">
               Global Feed
             </Link>
           </li>
 
-          {activeTag != "" && (
+          {filter != "global" && filter != "your" && (
             <li className="nav-item">
-              <Link className={"nav-link active"} to={`/?tag=${activeTag}`}>
-                #{activeTag}
+              <Link className={"nav-link active"} to={`/?tag=${filter}`}>
+                #{filter}
               </Link>
             </li>
           )}
@@ -57,7 +62,7 @@ export function ArticleList({
                 prefetch="intent"
                 className="page-link"
                 style={{ cursor: "pointer" }}
-                to={`/?tag=${activeTag}&page=${i + 1}`}
+                to={`/?filter=${filter}&page=${i + 1}`}
               >
                 {i + 1}
               </Link>

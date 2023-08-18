@@ -13,7 +13,7 @@ export default function TagNavbar({ tags }: { tags: string[] }) {
               className="tag-pill tag-default"
               style={{ cursor: "pointer" }}
               key={tag}
-              to={`/?tag=${tag}&page=${1}`}
+              to={`/?filter=${tag}&page=${1}`}
             >
               {tag}
             </Link>

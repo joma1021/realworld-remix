@@ -17,25 +17,24 @@ export async function getTags(): Promise<string[]> {
     throw Error("Error occurred while fetching data");
   }
 }
-export async function getGlobalArticles(tag: string, page: number, token?: string): Promise<ArticlesDTO> {
+export async function getGlobalArticles(page?: number, tag?: string): Promise<ArticlesDTO> {
   const offset = page ? (page - 1) * 10 : 0;
-  const searchParams =
-    tag != ""
-      ? new URLSearchParams({
-          limit: "10",
-          offset: `${offset}`,
-          tag: tag,
-        })
-      : new URLSearchParams({
-          limit: "10",
-          offset: `${offset}`,
-        });
+  const searchParams = tag
+    ? new URLSearchParams({
+        limit: "10",
+        offset: `${offset}`,
+        tag: tag,
+      })
+    : new URLSearchParams({
+        limit: "10",
+        offset: `${offset}`,
+      });
   console.log("FETCH", `${BASE_URL}/articles?` + searchParams);
 
   try {
     const response = await fetch(`${BASE_URL}/articles?` + searchParams, {
       method: "GET",
-      headers: setHeaders(token),
+      headers: setHeaders(),
     });
     if (!response.ok) {
       throw Error(response.statusText);
@@ -48,11 +47,7 @@ export async function getGlobalArticles(tag: string, page: number, token?: strin
   }
 }
 
-export async function getYourArticles(
-  token: string,
-  controller?: AbortController,
-  page?: number
-): Promise<ArticlesDTO> {
+export async function getYourArticles(token?: string, page?: number): Promise<ArticlesDTO> {
   const offset = page ? (page - 1) * 10 : 0;
   const searchParams = new URLSearchParams({
     limit: "10",
@@ -62,7 +57,6 @@ export async function getYourArticles(
   try {
     const response = await fetch(`${BASE_URL}/articles/feed?` + searchParams, {
       method: "GET",
-      signal: controller?.signal,
       headers: setHeaders(token),
     });
     if (!response.ok) {
