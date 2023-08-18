@@ -11,15 +11,3 @@ export function Layout({ children }: PropsWithChildren) {
     </>
   );
 }
-
-// import * as React from "react";
-
-// const layout = (children: React.ReactNode) => (
-//   <>
-//     <Header />
-//     {children}
-//     <Footer />
-//   </>
-// );
-
-// export default layout;

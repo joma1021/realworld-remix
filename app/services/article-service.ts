@@ -17,7 +17,7 @@ export async function getTags(): Promise<string[]> {
     throw Error("Error occurred while fetching data");
   }
 }
-export async function getGlobalArticles(tag: string, page: number): Promise<ArticlesDTO> {
+export async function getGlobalArticles(tag: string, page: number, token?: string): Promise<ArticlesDTO> {
   const offset = page ? (page - 1) * 10 : 0;
   const searchParams =
     tag != ""
@@ -35,7 +35,7 @@ export async function getGlobalArticles(tag: string, page: number): Promise<Arti
   try {
     const response = await fetch(`${BASE_URL}/articles?` + searchParams, {
       method: "GET",
-      headers: setHeaders(),
+      headers: setHeaders(token),
     });
     if (!response.ok) {
       throw Error(response.statusText);

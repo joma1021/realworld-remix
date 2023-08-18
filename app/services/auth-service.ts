@@ -4,10 +4,7 @@ import type { LoginCredentials, RegisterCredentials } from "~/models/auth";
 import type { UserData } from "~/models/user";
 
 export async function login(credentials: LoginCredentials) {
-  const params = new URLSearchParams({
-    path: "/login",
-  });
-  return fetch("/middleware/auth?" + params, {
+  return fetch(`${BASE_URL}/users/login`, {
     method: "POST",
     headers: setHeaders(),
     body: JSON.stringify({ user: credentials }),
@@ -15,7 +12,7 @@ export async function login(credentials: LoginCredentials) {
 }
 
 export async function register(credentials: RegisterCredentials) {
-  return fetch("/middleware/auth?", {
+  return fetch(`${BASE_URL}/users`, {
     method: "POST",
     headers: setHeaders(),
     body: JSON.stringify({ user: credentials }),

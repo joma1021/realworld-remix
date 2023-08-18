@@ -1,11 +1,18 @@
 import styles from "~/styles/global.css";
-import type { LinksFunction } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
+import { type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { Layout } from "./components/layout/layout";
+import { getUserSessionData } from "./session.server";
+import { AuthProvider } from "./components/auth/auth-provider";
 
 export const links: LinksFunction = () => [...[{ rel: "stylesheet", href: styles }]];
+export const loader = async ({ request }: LoaderArgs) => {
+  const userSessionData = await getUserSessionData(request);
+  return userSessionData;
+};
 
 export default function App() {
+  const sessionData = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -22,9 +29,11 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Layout>
-          <Outlet />
-        </Layout>
+        <AuthProvider userSession={sessionData}>
+          <Layout>
+            <Outlet />
+          </Layout>
+        </AuthProvider>
 
         <ScrollRestoration />
         <Scripts />

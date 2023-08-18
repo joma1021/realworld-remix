@@ -5,3 +5,9 @@ export interface UserData {
   image: string;
   token: string;
 }
+
+export interface UserSessionData {
+  username: string;
+  image: string;
+  isLoggedIn: boolean;
+}
