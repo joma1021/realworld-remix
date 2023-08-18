@@ -53,7 +53,7 @@ export default function Login() {
       <div className="container page">
         <div className="row">
           <div className="col-md-6 offset-md-3 col-xs-12">
-            <h1 className="text-xs-center">Sign in</h1>
+            <h1 className="text-xs-center">Sign un</h1>
             <p className="text-xs-center">
               <Link to="/register">Need an account?</Link>
             </p>
@@ -76,7 +76,7 @@ export default function Login() {
                 />
               </fieldset>
               <button type="submit" className="btn btn-lg btn-primary pull-xs-right">
-                Sign Up
+                Sign up
               </button>
             </Form>
           </div>

@@ -61,7 +61,7 @@ export default function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/registe" ? "active" : ""}`} to="/register">
+              <Link prefetch="intent" className={`nav-link ${path == "/register" ? "active" : ""}`} to="/register">
                 Sign up
               </Link>
             </li>
