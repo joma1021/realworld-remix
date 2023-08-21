@@ -80,10 +80,12 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <HomeLayout>
-        <div>
-          Error: {error.status} {error.statusText}
+        <>
+          <div>
+            Error: {error.status} {error.statusText}
+          </div>
           <Link to={pathname + search}>{"Please retry"}</Link>
-        </div>
+        </>
       </HomeLayout>
     );
   }
@@ -91,8 +93,10 @@ export function ErrorBoundary() {
   const errorMessage = error instanceof Error ? error.message : "Unknown error";
   return (
     <HomeLayout>
-      <div>Error: {errorMessage}</div>
-      <Link to={pathname + search}>{"Please retry"}</Link>
+      <>
+        <div>Error: {errorMessage}</div>
+        <Link to={pathname + search}>{"Please retry"}</Link>
+      </>
     </HomeLayout>
   );
 }

@@ -20,7 +20,7 @@ export function ArticlePreview({ article }: { article: ArticleData }) {
           slug={article.slug}
         /> */}
       </div>
-      <Link to={`/article/${article.slug}`} className="preview-link">
+      <Link to={`/article/${article.slug}/comments`} className="preview-link">
         <h1>{article.title}</h1>
         <p>{article.description}</p>
         <span>Read more...</span>
