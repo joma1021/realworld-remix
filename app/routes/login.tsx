@@ -1,6 +1,6 @@
 import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, useActionData } from "@remix-run/react";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
 import FormError from "~/components/errors/form-error";
 import type { LoginCredentials } from "~/models/auth";
@@ -13,11 +13,11 @@ export const action = async ({ request }: ActionArgs) => {
   const password = formData.get("password");
 
   if (!validateInput(email)) {
-    return json({ errors: { [""]: ["email can't be blank"] } }, { status: 400 });
+    return json({ errors: { ":": ["email can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(password)) {
-    return json({ errors: { [""]: ["password can't be blank"] } }, { status: 400 });
+    return json({ errors: { ":": ["password can't be blank"] } }, { status: 400 });
   }
   const credentials: LoginCredentials = {
     email: email as string,
@@ -42,6 +42,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Login() {
   const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
   return (
     <div className="auth-page">
       <div className="container page">
@@ -66,7 +67,11 @@ export default function Login() {
                   placeholder="Password"
                 />
               </fieldset>
-              <button type="submit" className="btn btn-lg btn-primary pull-xs-right">
+              <button
+                type="submit"
+                className="btn btn-lg btn-primary pull-xs-right"
+                disabled={navigation.state === "submitting"}
+              >
                 Sign in
               </button>
             </Form>
