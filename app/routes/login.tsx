@@ -13,11 +13,11 @@ export const action = async ({ request }: ActionArgs) => {
   const password = formData.get("password");
 
   if (!validateInput(email)) {
-    return json({ errors: { ":": ["email can't be blank"] } }, { status: 400 });
+    return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(password)) {
-    return json({ errors: { ":": ["password can't be blank"] } }, { status: 400 });
+    return json({ errors: { "": ["password can't be blank"] } }, { status: 400 });
   }
   const credentials: LoginCredentials = {
     email: email as string,

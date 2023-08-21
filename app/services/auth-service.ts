@@ -18,7 +18,7 @@ export async function register(credentials: RegisterCredentials) {
     body: JSON.stringify({ user: credentials }),
   });
 }
-export async function getCurrentUser(token: string): Promise<UserData> {
+export async function getCurrentUser(token: string | undefined): Promise<UserData> {
   return fetch(`${BASE_URL}/user`, {
     method: "GET",
     headers: setHeaders(token),

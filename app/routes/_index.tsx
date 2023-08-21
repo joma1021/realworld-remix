@@ -17,7 +17,6 @@ export async function loader({ request }: LoaderArgs) {
   const currentPage = url.searchParams.get("page") ?? "1";
   const filter = url.searchParams.get("filter") ?? (userSession.isLoggedIn ? "your" : "global");
   const currentPageNumber = Number(currentPage);
-  console.log(filter);
 
   switch (filter) {
     case "your": {
