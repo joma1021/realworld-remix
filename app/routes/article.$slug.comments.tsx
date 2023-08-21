@@ -28,7 +28,6 @@ export const action = async ({ request, params }: ActionArgs) => {
   const action = formData.get("action");
   if (action !== "CREATE") {
     const id = action;
-    console.log(id);
     await deleteComment(slug, Number(id), token);
     return redirect(request.url);
   }

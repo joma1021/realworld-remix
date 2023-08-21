@@ -125,21 +125,21 @@ export async function updateArticle(token: string, slug: string, article: EditAr
   });
 }
 
-export async function deleteArticle(token: string, slug: string): Promise<Response> {
+export async function deleteArticle(slug: string, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/articles/${slug}`, {
     method: "DELETE",
     headers: setHeaders(token),
   });
 }
 
-export async function favoriteArticle(token: string, slug: string): Promise<Response> {
+export async function favoriteArticle(slug: string, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "POST",
     headers: setHeaders(token),
   });
 }
 
-export async function unfavoriteArticle(token: string, slug: string): Promise<Response> {
+export async function unfavoriteArticle(slug: string, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "DELETE",
     headers: setHeaders(token),

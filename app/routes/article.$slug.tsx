@@ -1,8 +1,13 @@
-import type { LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
 import { Link, Outlet, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";
-import { getArticle } from "~/services/article-service";
+import DeleteButton from "~/components/buttons/delete-button";
+import EditButton from "~/components/buttons/edit-button";
+import FavoriteButton from "~/components/buttons/favorite-button";
+import FollowButton from "~/components/buttons/follow-button";
+import { deleteArticle, favoriteArticle, getArticle, unfavoriteArticle } from "~/services/article-service";
+import { followUser, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -10,6 +15,47 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const slug = params.slug ?? "";
 
   return await getArticle(slug, token);
+};
+
+export const action = async ({ request, params }: ActionArgs) => {
+  const formData = await request.formData();
+  const token = await getToken(request);
+  const slug = params.slug ?? "";
+  const action = formData.get("action");
+  switch (action) {
+    case "EDIT": {
+      return redirect(`edit/${slug}`);
+    }
+    case "DELETE": {
+      await deleteArticle(slug, token);
+      return redirect("/");
+    }
+    case "FOLLOW": {
+      const url = new URL(request.url);
+      const username = url.searchParams.get("username")?.toString();
+      console.log(username);
+      if (username) await followUser(username, token);
+      return redirect(request.url + "/comments");
+    }
+    case "UNFOLLOW": {
+      const url = new URL(request.url);
+      const username = url.searchParams.get("username")?.toString();
+      console.log(username);
+      if (username) await unfollowUser(username, token);
+      return redirect(request.url + "/comments");
+    }
+    case "FAVORITE": {
+      await favoriteArticle(slug, token);
+      return redirect(request.url + "/comments");
+    }
+    case "UNFAVORITE": {
+      await unfavoriteArticle(slug, token);
+      return redirect(request.url + "/comments");
+    }
+    default: {
+      return null;
+    }
+  }
 };
 
 export default function ArticleView() {
@@ -25,31 +71,25 @@ export default function ArticleView() {
             <Link prefetch="intent" to={`/profile/${article.author.username}`}>
               <img src={article.author.image} />
             </Link>
+
             <div className="info">
               <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
                 {article.author.username}
               </Link>
               <span className="date">{article.createdAt}</span>
             </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow {article.author.username} <span className="counter">(10)</span>
-            </button>
-            &nbsp;&nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Post <span className="counter">(29)</span>
-            </button>
-            &nbsp;&nbsp;
-            {article.author.username == userSession.username && (
+
+            {article.author.username == userSession.username ? (
               <>
-                <button className="btn btn-sm btn-outline-secondary">
-                  <i className="ion-edit"></i> Edit Article
-                </button>
+                <EditButton />
                 &nbsp;&nbsp;
-                <button className="btn btn-sm btn-outline-danger">
-                  <i className="ion-trash-a"></i> Delete Article
-                </button>
+                <DeleteButton />
+              </>
+            ) : (
+              <>
+                <FollowButton article={article} />
+                &nbsp;&nbsp;
+                <FavoriteButton article={article} />
               </>
             )}
           </div>
@@ -83,25 +123,17 @@ export default function ArticleView() {
               </Link>
               <span className="date">{article.createdAt}</span>
             </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow {article.author.username} <span className="counter">(10)</span>
-            </button>
-            &nbsp;&nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Post <span className="counter">(29)</span>
-            </button>
-            &nbsp;&nbsp;
-            {article.author.username == userSession.username && (
+            {article.author.username == userSession.username ? (
               <>
-                <button className="btn btn-sm btn-outline-secondary">
-                  <i className="ion-edit"></i> Edit Article
-                </button>
+                <EditButton />
                 &nbsp;&nbsp;
-                <button className="btn btn-sm btn-outline-danger">
-                  <i className="ion-trash-a"></i> Delete Article
-                </button>
+                <DeleteButton />
+              </>
+            ) : (
+              <>
+                <FollowButton article={article} />
+                &nbsp;&nbsp;
+                <FavoriteButton article={article} />
               </>
             )}
           </div>

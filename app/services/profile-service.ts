@@ -22,14 +22,14 @@ export async function getProfile(username: string, token: string, controller?: A
   }
 }
 
-export async function followUser(token: string, username: string): Promise<Response> {
+export async function followUser(username: string, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/profiles/${username}/follow`, {
     method: "POST",
     headers: setHeaders(token),
   });
 }
 
-export async function unfollowUser(token: string, username: string): Promise<Response> {
+export async function unfollowUser(username: string, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/profiles/${username}/follow`, {
     method: "DELETE",
     headers: setHeaders(token),
