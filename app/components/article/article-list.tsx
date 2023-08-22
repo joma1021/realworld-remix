@@ -20,20 +20,20 @@ export function ArticleList({
         <ul className="nav nav-pills outline-active">
           {userSession.isLoggedIn && (
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${filter == "your" ? "active" : ""}`} to="/?filter=your">
+              <Link prefetch="intent" className={`nav-link ${filter == "your" ? "active" : ""}`} to="?filter=your">
                 Your Feed
               </Link>
             </li>
           )}
           <li className="nav-item">
-            <Link prefetch="intent" className={`nav-link ${filter === "global" ? "active" : ""}`} to="/?filter=global">
+            <Link prefetch="intent" className={`nav-link ${filter === "global" ? "active" : ""}`} to="?filter=global">
               Global Feed
             </Link>
           </li>
 
           {filter != "global" && filter != "your" && (
             <li className="nav-item">
-              <Link prefetch="intent" className={"nav-link active"} to={`/?tag=${filter}`}>
+              <Link prefetch="intent" className={"nav-link active"} to={`?tag=${filter}`}>
                 #{filter}
               </Link>
             </li>
@@ -62,7 +62,7 @@ export function ArticleList({
                 prefetch="intent"
                 className="page-link"
                 style={{ cursor: "pointer" }}
-                to={`/?filter=${filter}&page=${i + 1}`}
+                to={`?filter=${filter}&page=${i + 1}`}
               >
                 {i + 1}
               </Link>

@@ -5,13 +5,13 @@ export function ArticlePreview({ article }: { article: ArticleData }) {
   return (
     <div className="article-preview">
       <div className="article-meta">
-        <Link to={`/profile/${article.author.username}`}>
+        <Link to={`/profile/${article.author.username}/articles`}>
           <img src={`${article.author.image}`} />
         </Link>
         <div className="info">
-          <a href={`/profile/${article.author.username}`} className="author">
+          <Link to={`/profile/${article.author.username}/articles`} className="author">
             {article.author.username}
-          </a>
+          </Link>
           <span className="date">{article.createdAt}</span>
         </div>
         {/* <FavoriteButtonSmall

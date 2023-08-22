@@ -1,22 +1,15 @@
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  isRouteErrorResponse,
-  useLoaderData,
-  useLocation,
-  useNavigation,
-  useRouteError,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext } from "react";
 import { validateInput } from "~/common/helpers";
 import { UserContext } from "~/components/auth/auth-provider";
+import DefaultError from "~/components/errors/default-error";
 import { createComment, deleteComment, getComments } from "~/services/comment-service";
 import { getToken } from "~/session.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
-  const slug = params.slug ?? "";
+  const slug = params.slug as string;
 
   return await getComments(slug, token);
 };
@@ -24,7 +17,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData();
   const token = await getToken(request);
-  const slug = params.slug ?? "";
+  const slug = params.slug as string;
   const action = formData.get("action");
   if (action !== "CREATE") {
     const id = action;
@@ -92,11 +85,11 @@ export default function Comments() {
             </div>
 
             <div className="card-footer">
-              <Link to={`/profile/${comment.author.username}`} className="comment-author">
+              <Link to={`/profile/${comment.author.username}/articles`} className="comment-author">
                 <img src={comment.author.image} className="comment-author-img" />
               </Link>
               &nbsp;
-              <Link to={`/profile/${comment.author.username}`} className="comment-author">
+              <Link to={`/profile/${comment.author.username}/articles`} className="comment-author">
                 {comment.author.username}
               </Link>
               <span className="date-posted">{comment.createdAt}</span>
@@ -123,25 +116,5 @@ export default function Comments() {
 }
 
 export function ErrorBoundary() {
-  const error = useRouteError();
-  const { pathname, search } = useLocation();
-
-  if (isRouteErrorResponse(error)) {
-    return (
-      <>
-        <div>
-          Error: {error.status} {error.statusText}
-        </div>
-        <Link to={pathname + search}>{"Please retry"}</Link>
-      </>
-    );
-  }
-
-  const errorMessage = error instanceof Error ? error.message : "Unknown error";
-  return (
-    <>
-      <div>Error: {errorMessage}</div>
-      <Link to={pathname + search}>{"Please retry"}</Link>
-    </>
-  );
+  return <DefaultError />;
 }

@@ -1,18 +1,19 @@
 import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
-import { Link, Outlet, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";
 import DeleteButton from "~/components/buttons/delete-button";
 import EditButton from "~/components/buttons/edit-button";
 import FavoriteButton from "~/components/buttons/favorite-button";
-import FollowButton from "~/components/buttons/follow-button";
+import { FollowButton } from "~/components/buttons/follow-button";
+import DefaultError from "~/components/errors/default-error";
 import { deleteArticle, favoriteArticle, getArticle, unfavoriteArticle } from "~/services/article-service";
 import { followUser, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
-  const slug = params.slug ?? "";
+  const slug = params.slug as string;
 
   return await getArticle(slug, token);
 };
@@ -20,7 +21,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData();
   const token = await getToken(request);
-  const slug = params.slug ?? "";
+  const slug = params.slug as string;
   const action = formData.get("action");
   switch (action) {
     case "EDIT": {
@@ -68,12 +69,12 @@ export default function ArticleView() {
           <h1>{article.title}</h1>
 
           <div className="article-meta">
-            <Link prefetch="intent" to={`/profile/${article.author.username}`}>
+            <Link prefetch="intent" to={`/profile/${article.author.username}/articles`}>
               <img src={article.author.image} />
             </Link>
 
             <div className="info">
-              <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
+              <Link prefetch="intent" to={`/profile/${article.author.username}/articles`} className="author">
                 {article.author.username}
               </Link>
               <span className="date">{article.createdAt}</span>
@@ -114,11 +115,11 @@ export default function ArticleView() {
 
         <div className="article-actions">
           <div className="article-meta">
-            <Link prefetch="intent" to={`/profile/${article.author.username}`}>
+            <Link prefetch="intent" to={`/profile/${article.author.username}/articles`}>
               <img src={article.author.image} />
             </Link>
             <div className="info">
-              <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
+              <Link prefetch="intent" to={`/profile/${article.author.username}/articles`} className="author">
                 {article.author.username}
               </Link>
               <span className="date">{article.createdAt}</span>
@@ -145,25 +146,5 @@ export default function ArticleView() {
 }
 
 export function ErrorBoundary() {
-  const error = useRouteError();
-  const { pathname, search } = useLocation();
-
-  if (isRouteErrorResponse(error)) {
-    return (
-      <>
-        <div>
-          Error: {error.status} {error.statusText}
-        </div>
-        <Link to={pathname + search}>{"Please retry"}</Link>
-      </>
-    );
-  }
-
-  const errorMessage = error instanceof Error ? error.message : "Unknown error";
-  return (
-    <>
-      <div>Error: {errorMessage}</div>
-      <Link to={pathname + search}>{"Please retry"}</Link>
-    </>
-  );
+  return <DefaultError />;
 }

@@ -1,5 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
+import DefaultError from "~/components/errors/default-error";
 import { getCurrentUser } from "~/services/auth-service";
 import { getToken } from "~/session.server";
 
@@ -80,4 +81,8 @@ export default function Settings() {
       </div>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <DefaultError />;
 }

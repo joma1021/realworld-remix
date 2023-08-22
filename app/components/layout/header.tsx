@@ -1,15 +1,15 @@
 import { Link, useLocation } from "@remix-run/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../auth/auth-provider";
 
 export default function Header() {
   const userSession = useContext(UserContext);
   const { pathname } = useLocation();
-  const [path, setPath] = useState(pathname);
+  // const [path, setPath] = useState(pathname);
 
-  useEffect(() => {
-    setPath(pathname);
-  }, [pathname]);
+  // useEffect(() => {
+  //   setPath(pathname);
+  // }, [pathname]);
 
   return (
     <nav className="navbar navbar-light">
@@ -20,19 +20,19 @@ export default function Header() {
         {userSession?.username ? (
           <ul className="nav navbar-nav pull-xs-right">
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/" ? "active" : ""}`} to="/">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/">
                 Home
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/editor" ? "active" : ""}`} to="/editor">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/editor" ? "active" : ""}`} to="/editor">
                 <i className="ion-compose"></i>&nbsp;New Article{" "}
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/settings" ? "active" : ""}`} to="/settings">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/settings" ? "active" : ""}`} to="/settings">
                 {" "}
                 <i className="ion-gear-a"></i>&nbsp;Settings{" "}
               </Link>
@@ -40,8 +40,8 @@ export default function Header() {
             <li className="nav-item">
               <Link
                 prefetch="intent"
-                className={`nav-link ${path.includes("/profile") ? "active" : ""}`}
-                to={`/profile/${userSession.username}`}
+                className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`}
+                to={`/profile/${userSession.username}/articles`}
               >
                 {userSession.image && <img width={25} height={25} src={userSession.image} className="user-pic" />}
                 {userSession.username}
@@ -51,17 +51,17 @@ export default function Header() {
         ) : (
           <ul className="nav navbar-nav pull-xs-right">
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/" ? "active" : ""}`} to="/">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/">
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/login" ? "active" : ""}`} to="/login">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/login" ? "active" : ""}`} to="/login">
                 Sign in
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${path == "/register" ? "active" : ""}`} to="/register">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/register" ? "active" : ""}`} to="/register">
                 Sign up
               </Link>
             </li>

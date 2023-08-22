@@ -1,7 +1,6 @@
 import { BASE_URL } from "~/common/api";
 import { setHeaders } from "~/common/headers";
 import type { ArticleData, ArticlesDTO, EditArticleData } from "~/models/article";
-import { Tab } from "~/models/tab";
 
 export async function getTags(): Promise<string[]> {
   console.log("FETCH", `${BASE_URL}/tags`);
@@ -60,15 +59,14 @@ export async function getYourArticles(token?: string, page?: number): Promise<Ar
 
 export async function getProfileArticles(
   username: string,
-  tab: Tab,
-  token: string,
-  controller?: AbortController,
+  tab: string,
+  token?: string,
   page?: number
 ): Promise<ArticlesDTO> {
   const offset = page ? (page - 1) * 5 : 0;
 
   const searchParams =
-    tab == Tab.FavArticles
+    tab === "fav"
       ? new URLSearchParams({
           limit: "5",
           offset: `${offset}`,
@@ -84,7 +82,6 @@ export async function getProfileArticles(
 
   const response = await fetch(`${BASE_URL}/articles?` + searchParams, {
     method: "GET",
-    signal: controller?.signal,
     headers: setHeaders(token),
   });
   if (!response.ok) {
@@ -132,15 +129,15 @@ export async function deleteArticle(slug: string, token?: string): Promise<Respo
   });
 }
 
-export async function favoriteArticle(slug: string, token?: string): Promise<Response> {
-  return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
+export async function favoriteArticle(username: string, token?: string): Promise<Response> {
+  return fetch(`${BASE_URL}/articles/${username}/favorite`, {
     method: "POST",
     headers: setHeaders(token),
   });
 }
 
-export async function unfavoriteArticle(slug: string, token?: string): Promise<Response> {
-  return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
+export async function unfavoriteArticle(username: string, token?: string): Promise<Response> {
+  return fetch(`${BASE_URL}/articles/${username}/favorite`, {
     method: "DELETE",
     headers: setHeaders(token),
   });
