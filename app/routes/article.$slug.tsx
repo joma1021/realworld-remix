@@ -25,7 +25,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const action = formData.get("action");
   switch (action) {
     case "EDIT": {
-      return redirect(`edit/${slug}`);
+      return redirect(`/editor/${slug}`);
     }
     case "DELETE": {
       await deleteArticle(slug, token);
@@ -34,14 +34,12 @@ export const action = async ({ request, params }: ActionArgs) => {
     case "FOLLOW": {
       const url = new URL(request.url);
       const username = url.searchParams.get("username")?.toString();
-      console.log(username);
       if (username) await followUser(username, token);
       return redirect(request.url + "/comments");
     }
     case "UNFOLLOW": {
       const url = new URL(request.url);
       const username = url.searchParams.get("username")?.toString();
-      console.log(username);
       if (username) await unfollowUser(username, token);
       return redirect(request.url + "/comments");
     }

@@ -1,11 +1,12 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
-import { useContext, type PropsWithChildren } from "react";
+import { useLoaderData } from "@remix-run/react";
+import { useContext } from "react";
 import { getGlobalArticles, getTags, getYourArticles } from "~/services/article-service";
 import TagNavbar from "~/components/tag/tag-navbar";
 import { ArticleList } from "~/components/article/article-list";
 import { getToken, getUserSessionData } from "~/session.server";
 import { UserContext } from "~/components/auth/auth-provider";
+import DefaultError from "~/components/errors/default-error";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "New Remix App" }, { name: "description", content: "Welcome to Remix!" }];
@@ -48,7 +49,7 @@ function ArticleOverview() {
   );
 }
 
-function HomeLayout({ children }: PropsWithChildren) {
+export default function Home() {
   const userSession = useContext(UserContext);
   return (
     <div className="home-page">
@@ -60,43 +61,13 @@ function HomeLayout({ children }: PropsWithChildren) {
           </div>
         </div>
       )}
-      <div className="container page">{children}</div>
+      <div className="container page">
+        <ArticleOverview />
+      </div>
     </div>
   );
 }
 
-export default function Home() {
-  return (
-    <HomeLayout>
-      <ArticleOverview />
-    </HomeLayout>
-  );
-}
-
 export function ErrorBoundary() {
-  const error = useRouteError();
-  const { pathname, search } = useLocation();
-
-  if (isRouteErrorResponse(error)) {
-    return (
-      <HomeLayout>
-        <>
-          <div>
-            Error: {error.status} {error.statusText}
-          </div>
-          <Link to={pathname + search}>{"Please retry"}</Link>
-        </>
-      </HomeLayout>
-    );
-  }
-
-  const errorMessage = error instanceof Error ? error.message : "Unknown error";
-  return (
-    <HomeLayout>
-      <>
-        <div>Error: {errorMessage}</div>
-        <Link to={pathname + search}>{"Please retry"}</Link>
-      </>
-    </HomeLayout>
-  );
+  return <DefaultError />;
 }

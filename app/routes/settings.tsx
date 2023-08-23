@@ -30,7 +30,7 @@ export default function Settings() {
                     className="form-control"
                     type="text"
                     name="image"
-                    value={user.image}
+                    defaultValue={user.image}
                     placeholder="URL of profile picture"
                   />
                 </fieldset>
@@ -39,7 +39,7 @@ export default function Settings() {
                     className="form-control form-control-lg"
                     type="text"
                     name="username"
-                    value={user.username}
+                    defaultValue={user.username}
                     placeholder="Your Name"
                   />
                 </fieldset>
@@ -47,7 +47,7 @@ export default function Settings() {
                   <textarea
                     className="form-control form-control-lg"
                     name="bio"
-                    value={user.bio}
+                    defaultValue={user.bio}
                     rows={8}
                     placeholder="Short bio about you"
                   ></textarea>
@@ -57,7 +57,7 @@ export default function Settings() {
                     className="form-control form-control-lg"
                     type="text"
                     name="email"
-                    value={user.email}
+                    defaultValue={user.email}
                     placeholder="Email"
                   />
                 </fieldset>

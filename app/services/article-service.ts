@@ -106,7 +106,7 @@ export async function getArticle(slug: string, token?: string): Promise<ArticleD
   return data.article;
 }
 
-export async function createArticle(token: string, article: EditArticleData): Promise<Response> {
+export async function createArticle(article: EditArticleData, token?: string): Promise<Response> {
   return fetch(`${BASE_URL}/articles`, {
     method: "POST",
     headers: setHeaders(token),
@@ -114,7 +114,7 @@ export async function createArticle(token: string, article: EditArticleData): Pr
   });
 }
 
-export async function updateArticle(token: string, slug: string, article: EditArticleData): Promise<Response> {
+export async function updateArticle(slug: string, article: EditArticleData, token?: string): Promise<Response> {
   return await fetch(`${BASE_URL}/articles/${slug}`, {
     method: "PUT",
     headers: setHeaders(token),
