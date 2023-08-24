@@ -1,10 +1,14 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { Link, Outlet, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";
 import { FollowActionButton } from "~/components/buttons/follow-button";
 import { followUser, getProfile, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Conduit - Profile" }];
+};
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
