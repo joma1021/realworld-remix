@@ -131,7 +131,6 @@ export async function deleteArticle(slug: string, token?: string): Promise<Respo
 }
 
 export async function favoriteArticle(slug: string, token?: string): Promise<Response> {
-  console.log(` URL: ${BASE_URL}/articles/${slug}/favorite`);
   return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "POST",
     headers: setHeaders(token),
@@ -139,7 +138,6 @@ export async function favoriteArticle(slug: string, token?: string): Promise<Res
 }
 
 export async function unfavoriteArticle(slug: string, token?: string): Promise<Response> {
-  console.log(` URL: ${BASE_URL}/articles/${slug}/favorite`);
   return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "DELETE",
     headers: setHeaders(token),

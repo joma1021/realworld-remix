@@ -25,12 +25,15 @@ export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
   const submit = useSubmit();
   const navigation = useNavigation();
 
-  const [favorite, setFavorite] = useState(article.favorited);
-  const [favoriteCount, setFavoriteCount] = useState(article.favoritesCount);
+  const [favoriteState, setFavoriteState] = useState({
+    favorited: article.favorited,
+    favoritesCount: article.favoritesCount,
+  });
+
   function handleOnSubmit() {
-    if (favorite) {
-      setFavorite(false);
-      setFavoriteCount(favoriteCount - 1);
+    if (favoriteState.favorited) {
+      setFavoriteState({ favorited: false, favoritesCount: favoriteState.favoritesCount - 1 });
+
       submit(JSON.stringify({ slug: article.slug, action: "UNFAVORITE" }), {
         replace: true,
         encType: "application/json",
@@ -39,8 +42,7 @@ export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
         preventScrollReset: true,
       });
     } else {
-      setFavorite(true);
-      setFavoriteCount(favoriteCount + 1);
+      setFavoriteState({ favorited: true, favoritesCount: favoriteState.favoritesCount + 1 });
       submit(JSON.stringify({ slug: article.slug, action: "FAVORITE" }), {
         replace: true,
         encType: "application/json",
@@ -50,18 +52,16 @@ export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
       });
     }
   }
-
+  console.log("render button");
   return (
-    // <Form className="btn-sm pull-xs-right">
     <button
-      className={`btn btn-${!favorite ? "outline-" : ""}primary btn-sm pull-xs-right `}
+      className={`btn btn-${!favoriteState.favorited ? "outline-" : ""}primary btn-sm pull-xs-right `}
       type="button"
       disabled={navigation.state === "submitting"}
       onClick={handleOnSubmit}
     >
       <i className="ion-heart"></i>
-      <span className="counter"> {favoriteCount}</span>
+      <span className="counter"> {favoriteState.favoritesCount}</span>
     </button>
-    // </Form>
   );
 }
