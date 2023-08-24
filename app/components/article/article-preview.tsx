@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
 import type { ArticleData } from "~/models/article";
+import { FavoriteButtonSmall } from "../buttons/favorite-button";
 
 export function ArticlePreview({ article }: { article: ArticleData }) {
   return (
@@ -14,11 +15,7 @@ export function ArticlePreview({ article }: { article: ArticleData }) {
           </Link>
           <span className="date">{article.createdAt}</span>
         </div>
-        {/* <FavoriteButtonSmall
-          favorite={article.favorited}
-          count={article.favoritesCount}
-          slug={article.slug}
-        /> */}
+        <FavoriteButtonSmall article={article} />
       </div>
       <Link to={`/article/${article.slug}/comments`} className="preview-link">
         <h1>{article.title}</h1>

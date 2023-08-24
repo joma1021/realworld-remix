@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";
 import DeleteButton from "~/components/buttons/delete-button";
 import EditButton from "~/components/buttons/edit-button";
-import FavoriteButton from "~/components/buttons/favorite-button";
+import { FavoriteButton } from "~/components/buttons/favorite-button";
 import { FollowButton } from "~/components/buttons/follow-button";
 import DefaultError from "~/components/errors/default-error";
 import { deleteArticle, favoriteArticle, getArticle, unfavoriteArticle } from "~/services/article-service";
@@ -19,10 +19,16 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const formData = await request.formData();
   const token = await getToken(request);
+
+  if (!token) {
+    return redirect("/register");
+  }
+
   const slug = params.slug as string;
+  const formData = await request.formData();
   const action = formData.get("action");
+
   switch (action) {
     case "EDIT": {
       return redirect(`/editor/${slug}`);

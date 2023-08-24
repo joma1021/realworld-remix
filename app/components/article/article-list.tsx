@@ -14,6 +14,7 @@ export function ArticleList({
   filter: string;
 }) {
   const userSession = useContext(UserContext);
+
   return (
     <div className="col-md-9">
       <div className="feed-toggle">

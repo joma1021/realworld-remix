@@ -73,7 +73,7 @@ export default function Settings() {
               </fieldset>
             </form>
             <hr />
-            <Form action="/logout" method="post">
+            <Form action="/logout-mw" method="post">
               <button className="btn btn-outline-danger">Or click here to logout.</button>
             </Form>
           </div>

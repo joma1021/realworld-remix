@@ -12,7 +12,7 @@ export async function getComments(slug: string, token?: string): Promise<Comment
     if (!response.ok) {
       return Promise.reject(response.statusText);
     }
-    console.log("FETCH article resolved");
+    console.log("FETCH comments resolved");
     const data = await response.json();
     return data.comments;
   } catch (e) {

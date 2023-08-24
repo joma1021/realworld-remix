@@ -14,10 +14,14 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const formData = await request.formData();
   const token = await getToken(request);
-  const username = params.username as string;
 
+  if (!token) {
+    return redirect("/register");
+  }
+
+  const formData = await request.formData();
+  const username = params.username as string;
   const action = formData.get("action");
   switch (action) {
     case "FOLLOW": {
