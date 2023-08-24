@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { useState } from "react";
@@ -9,6 +9,12 @@ import type { EditArticleData } from "~/models/article";
 import { createArticle } from "~/services/article-service";
 import { getToken } from "~/session.server";
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const token = await getToken(request);
+  // protect route
+  if (!token) throw redirect("/register");
+  return null;
+};
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const title = formData.get("title");

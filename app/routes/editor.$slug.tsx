@@ -11,8 +11,9 @@ import { getToken } from "~/session.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
+  // protect route
+  if (!token) throw redirect("/register");
   const slug = params.slug as string;
-
   return await getArticle(slug, token);
 };
 
