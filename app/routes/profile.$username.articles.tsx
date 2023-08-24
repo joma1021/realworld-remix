@@ -1,10 +1,14 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { ArticlePreview } from "~/components/article/article-preview";
 import DefaultError from "~/components/errors/default-error";
 import type { ArticleData } from "~/models/article";
 import { getProfileArticles } from "~/services/article-service";
 import { getToken } from "~/session.server";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Conduit - Profile" }];
+};
 
 export async function loader({ request, params }: LoaderArgs) {
   const url = new URL(request.url);

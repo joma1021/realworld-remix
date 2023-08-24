@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
@@ -6,6 +6,10 @@ import FormError from "~/components/errors/form-error";
 import type { LoginCredentials } from "~/models/auth";
 import { login } from "~/services/auth-service";
 import { createUserSession } from "~/session.server";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Conduit - Login" }];
+};
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();

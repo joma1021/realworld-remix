@@ -1,8 +1,13 @@
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import DefaultError from "~/components/errors/default-error";
 import { getCurrentUser } from "~/services/auth-service";
 import { getToken } from "~/session.server";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Conduit - Settings" }];
+};
 
 export async function loader({ request }: LoaderArgs) {
   const token = await getToken(request);

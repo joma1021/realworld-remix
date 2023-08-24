@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { useState } from "react";
@@ -8,6 +8,10 @@ import FormError from "~/components/errors/form-error";
 import type { EditArticleData } from "~/models/article";
 import { getArticle, updateArticle } from "~/services/article-service";
 import { getToken } from "~/session.server";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Conduit - Editor" }];
+};
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);

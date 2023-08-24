@@ -9,7 +9,7 @@ import { UserContext } from "~/components/auth/auth-provider";
 import DefaultError from "~/components/errors/default-error";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "New Remix App" }, { name: "description", content: "Welcome to Remix!" }];
+  return [{ title: "Conduit - Home" }];
 };
 
 export async function loader({ request }: LoaderArgs) {
