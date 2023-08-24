@@ -51,7 +51,7 @@ export default function ProfileArticles() {
           </div>
 
           <ul className="pagination">
-            {Array(Math.ceil(profileArticles.articlesCount / 10))
+            {Array(Math.ceil(profileArticles.articlesCount / 5))
               .fill(null)
               .map((_, i) => (
                 <li className={`page-item  ${i == currentPageNumber - 1 ? "active" : ""}`} key={i}>

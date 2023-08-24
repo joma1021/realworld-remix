@@ -4,7 +4,9 @@ import { favoriteArticle, unfavoriteArticle } from "~/services/article-service";
 import { getToken } from "~/session.server";
 
 export const action = async ({ request }: ActionArgs) => {
-  const pathname = new URL(request.headers.get("referer") as string).pathname;
+  const url = new URL(request.headers.get("referer") as string);
+  const pathname = url.pathname;
+  const searchParams = url.searchParams;
   const { slug, action } = await request.json();
 
   const token = await getToken(request);
@@ -16,14 +18,14 @@ export const action = async ({ request }: ActionArgs) => {
   switch (action) {
     case "FAVORITE": {
       await favoriteArticle(slug, token);
-      return redirect(pathname);
+      return redirect(pathname + "?" + searchParams);
     }
     case "UNFAVORITE": {
       await unfavoriteArticle(slug, token);
-      return redirect(pathname);
+      return redirect(pathname + "?" + searchParams);
     }
     default: {
-      return redirect(pathname);
+      return redirect(pathname + "?" + searchParams);
     }
   }
 };

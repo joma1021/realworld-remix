@@ -26,11 +26,11 @@ export const action = async ({ request, params }: ActionArgs) => {
   switch (action) {
     case "FOLLOW": {
       await followUser(username, token);
-      return redirect(request.url);
+      return redirect(request.url + "/articles");
     }
     case "UNFOLLOW": {
       await unfollowUser(username, token);
-      return redirect(request.url);
+      return redirect(request.url + "/articles");
     }
 
     default: {

@@ -13,7 +13,8 @@ export async function getTags(): Promise<string[]> {
   const data = await response.json();
   return data.tags;
 }
-export async function getGlobalArticles(page?: number, tag?: string): Promise<ArticlesDTO> {
+export async function getGlobalArticles(token?: string, page?: number, tag?: string): Promise<ArticlesDTO> {
+  console.log(token);
   const offset = page ? (page - 1) * 10 : 0;
   const searchParams = tag
     ? new URLSearchParams({
@@ -29,7 +30,7 @@ export async function getGlobalArticles(page?: number, tag?: string): Promise<Ar
 
   const response = await fetch(`${BASE_URL}/articles?` + searchParams, {
     method: "GET",
-    headers: setHeaders(),
+    headers: setHeaders(token),
   });
   if (!response.ok) {
     throw Error(response.statusText);
@@ -129,15 +130,17 @@ export async function deleteArticle(slug: string, token?: string): Promise<Respo
   });
 }
 
-export async function favoriteArticle(username: string, token?: string): Promise<Response> {
-  return fetch(`${BASE_URL}/articles/${username}/favorite`, {
+export async function favoriteArticle(slug: string, token?: string): Promise<Response> {
+  console.log(` URL: ${BASE_URL}/articles/${slug}/favorite`);
+  return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "POST",
     headers: setHeaders(token),
   });
 }
 
-export async function unfavoriteArticle(username: string, token?: string): Promise<Response> {
-  return fetch(`${BASE_URL}/articles/${username}/favorite`, {
+export async function unfavoriteArticle(slug: string, token?: string): Promise<Response> {
+  console.log(` URL: ${BASE_URL}/articles/${slug}/favorite`);
+  return fetch(`${BASE_URL}/articles/${slug}/favorite`, {
     method: "DELETE",
     headers: setHeaders(token),
   });

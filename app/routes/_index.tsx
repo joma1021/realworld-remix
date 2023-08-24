@@ -13,6 +13,7 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export async function loader({ request }: LoaderArgs) {
+  const token = await getToken(request);
   const url = new URL(request.url);
   const userSession = await getUserSessionData(request);
   const currentPage = url.searchParams.get("page") ?? "1";
@@ -21,18 +22,20 @@ export async function loader({ request }: LoaderArgs) {
 
   switch (filter) {
     case "your": {
-      const token = await getToken(request);
       const [articles, tags] = await Promise.all([getYourArticles(token, Number(currentPageNumber)), getTags()]);
       return { articles, tags, currentPageNumber, filter };
     }
 
     case "global": {
-      const [articles, tags] = await Promise.all([getGlobalArticles(Number(currentPageNumber)), getTags()]);
+      const [articles, tags] = await Promise.all([getGlobalArticles(token, Number(currentPageNumber)), getTags()]);
       return { articles, tags, currentPageNumber, filter };
     }
 
     default: {
-      const [articles, tags] = await Promise.all([getGlobalArticles(Number(currentPageNumber), filter), getTags()]);
+      const [articles, tags] = await Promise.all([
+        getGlobalArticles(token, Number(currentPageNumber), filter),
+        getTags(),
+      ]);
       return { articles, tags, currentPageNumber, filter };
     }
   }
