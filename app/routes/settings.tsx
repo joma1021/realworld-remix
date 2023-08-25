@@ -1,9 +1,12 @@
-import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import type { V2_MetaFunction, LoaderArgs, ActionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import { validateInput } from "~/common/helpers";
 import DefaultError from "~/components/errors/default-error";
-import { getCurrentUser } from "~/services/auth-service";
-import { getToken } from "~/session.server";
+import FormError from "~/components/errors/form-error";
+import type { UpdateUser } from "~/models/user";
+import { getCurrentUser, updateUser } from "~/services/auth-service";
+import { createUserSession, getToken } from "~/session.server";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Conduit - Settings" }];
@@ -17,8 +20,55 @@ export async function loader({ request }: LoaderArgs) {
   return await getCurrentUser(token);
 }
 
+export const action = async ({ request }: ActionArgs) => {
+  const token = await getToken(request);
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const password = formData.get("password");
+  const username = formData.get("username");
+  const image = formData.get("image");
+  const bio = formData.get("bio");
+
+  if (!validateInput(email)) {
+    return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
+  }
+
+  if (!validateInput(image)) {
+    return json({ errors: { "": ["image can't be blank"] } }, { status: 400 });
+  }
+
+  if (!validateInput(username)) {
+    return json({ errors: { "": ["username can't be blank"] } }, { status: 400 });
+  }
+  const user: UpdateUser = {
+    username: username as string,
+    image: image as string,
+    email: email as string,
+  };
+
+  if (validateInput(bio)) user.bio = bio as string;
+  if (validateInput(password)) user.password = password as string;
+
+  const response = await updateUser(user, token);
+  const data = await response.json();
+
+  if (!response.ok) {
+    return json({ errors: { "": ["unknown error"] } }, { status: 400 });
+  } else {
+    return createUserSession({
+      request: request,
+      username: data.user.username,
+      authToken: data.user.token,
+      image: data.user.image,
+      redirectTo: "/",
+    });
+  }
+};
+
 export default function Settings() {
   const user = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
   return (
     <div className="settings-page">
       <div className="container page">
@@ -26,11 +76,9 @@ export default function Settings() {
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Your Settings</h1>
 
-            <ul className="error-messages">
-              <li>Update not implemented yet</li>
-            </ul>
+            {actionData?.errors && <FormError errors={actionData.errors} />}
 
-            <form>
+            <Form method="post">
               <fieldset>
                 <fieldset className="form-group">
                   <input
@@ -76,9 +124,15 @@ export default function Settings() {
                     placeholder="New Password"
                   />
                 </fieldset>
-                <button className="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
+                <button
+                  className="btn btn-lg btn-primary pull-xs-right"
+                  type="submit"
+                  disabled={navigation.state === "submitting"}
+                >
+                  Update Settings
+                </button>
               </fieldset>
-            </form>
+            </Form>
             <hr />
             <Form action="/logout-mw" method="post">
               <button className="btn btn-outline-danger">Or click here to logout.</button>

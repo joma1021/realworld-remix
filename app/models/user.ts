@@ -11,3 +11,11 @@ export interface UserSessionData {
   image: string;
   isLoggedIn: boolean;
 }
+
+export interface UpdateUser {
+  username: string;
+  email: string;
+  bio?: string;
+  image: string;
+  password?: string;
+}

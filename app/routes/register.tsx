@@ -26,7 +26,7 @@ export const action = async ({ request }: ActionArgs) => {
   }
 
   if (!validateInput(username)) {
-    return json({ errors: { "": ["password can't be blank"] } }, { status: 400 });
+    return json({ errors: { "": ["username can't be blank"] } }, { status: 400 });
   }
   const credentials: RegisterCredentials = {
     username: username as string,
