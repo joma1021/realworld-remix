@@ -1,40 +1,55 @@
 import { Form, useNavigation, useSubmit } from "@remix-run/react";
 import { useState } from "react";
-import type { ArticleData } from "~/models/article";
 
-export function FavoriteButton({ article }: { article: ArticleData }) {
+export function FavoriteButton({
+  favorite,
+  favoritesCount,
+  slug,
+}: {
+  favorite: boolean;
+  favoritesCount: number;
+  slug: string;
+}) {
   const navigation = useNavigation();
   return (
     <Form style={{ display: "inline-block" }} method="post" preventScrollReset={true}>
       <button
-        className={`btn btn-sm btn-${!article.favorited ? "outline-" : ""}primary `}
+        className={`btn btn-sm btn-${!favorite ? "outline-" : ""}primary `}
         type="submit"
         name="action"
-        value={article.favorited ? "UNFAVORITE" : "FAVORITE"}
+        value={favorite ? "UNFAVORITE" : "FAVORITE"}
         disabled={navigation.state === "submitting"}
       >
         <i className="ion-heart"></i>
-        &nbsp; {article.favorited ? "Unfavorite" : "Favorite"} Post
-        <span className="counter"> ({article.favoritesCount})</span>
+        &nbsp; {favorite ? "Unfavorite" : "Favorite"} Post
+        <span className="counter"> ({favoritesCount})</span>
       </button>
     </Form>
   );
 }
 
-export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
+export function FavoriteButtonSmall({
+  favorite,
+  favoritesCount,
+  slug,
+}: {
+  favorite: boolean;
+  favoritesCount: number;
+  slug: string;
+}) {
   const submit = useSubmit();
   const navigation = useNavigation();
 
   const [favoriteState, setFavoriteState] = useState({
-    favorited: article.favorited,
-    favoritesCount: article.favoritesCount,
+    favorite: favorite,
+    favoritesCount: favoritesCount,
   });
 
   function handleOnSubmit() {
-    if (favoriteState.favorited) {
-      setFavoriteState({ favorited: false, favoritesCount: favoriteState.favoritesCount - 1 });
+    if (favoriteState.favorite) {
+      setFavoriteState({ favorite: false, favoritesCount: favoriteState.favoritesCount - 1 });
 
-      submit(JSON.stringify({ slug: article.slug, action: "UNFAVORITE" }), {
+      submit(JSON.stringify({ slug: slug, action: "UNFAVORITE" }), {
         replace: true,
         encType: "application/json",
         method: "post",
@@ -42,8 +57,8 @@ export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
         preventScrollReset: true,
       });
     } else {
-      setFavoriteState({ favorited: true, favoritesCount: favoriteState.favoritesCount + 1 });
-      submit(JSON.stringify({ slug: article.slug, action: "FAVORITE" }), {
+      setFavoriteState({ favorite: true, favoritesCount: favoriteState.favoritesCount + 1 });
+      submit(JSON.stringify({ slug: slug, action: "FAVORITE" }), {
         replace: true,
         encType: "application/json",
         action: "/favorite-mw",
@@ -55,7 +70,7 @@ export function FavoriteButtonSmall({ article }: { article: ArticleData }) {
   console.log("render button");
   return (
     <button
-      className={`btn btn-${!favoriteState.favorited ? "outline-" : ""}primary btn-sm pull-xs-right `}
+      className={`btn btn-${!favoriteState.favorite ? "outline-" : ""}primary btn-sm pull-xs-right `}
       type="button"
       disabled={navigation.state === "submitting"}
       onClick={handleOnSubmit}

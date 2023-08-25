@@ -98,7 +98,11 @@ export default function ArticleView() {
               <>
                 <FollowButton article={article} />
                 &nbsp;&nbsp;
-                <FavoriteButton article={article} />
+                <FavoriteButton
+                  favorite={article.favorited}
+                  favoritesCount={article.favoritesCount}
+                  slug={article.slug}
+                />
               </>
             )}
           </div>
@@ -142,7 +146,11 @@ export default function ArticleView() {
               <>
                 <FollowButton article={article} />
                 &nbsp;&nbsp;
-                <FavoriteButton article={article} />
+                <FavoriteButton
+                  favorite={article.favorited}
+                  favoritesCount={article.favoritesCount}
+                  slug={article.slug}
+                />
               </>
             )}
           </div>

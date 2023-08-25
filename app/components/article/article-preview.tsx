@@ -15,7 +15,7 @@ export function ArticlePreview({ article }: { article: ArticleData }) {
           </Link>
           <span className="date">{article.createdAt}</span>
         </div>
-        <FavoriteButtonSmall article={article} />
+        <FavoriteButtonSmall favorite={article.favorited} favoritesCount={article.favoritesCount} slug={article.slug} />
       </div>
       <Link to={`/article/${article.slug}/comments`} className="preview-link">
         <h1>{article.title}</h1>
