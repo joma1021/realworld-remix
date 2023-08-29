@@ -67,7 +67,6 @@ export function FavoriteButtonSmall({
       });
     }
   }
-  console.log("render button");
   return (
     <button
       className={`btn btn-${!favoriteState.favorite ? "outline-" : ""}primary btn-sm pull-xs-right `}

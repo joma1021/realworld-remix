@@ -14,7 +14,6 @@ export async function getTags(): Promise<string[]> {
   return data.tags;
 }
 export async function getGlobalArticles(token?: string, page?: number, tag?: string): Promise<ArticlesDTO> {
-  console.log(token);
   const offset = page ? (page - 1) * 10 : 0;
   const searchParams = tag
     ? new URLSearchParams({
