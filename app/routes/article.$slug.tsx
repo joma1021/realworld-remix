@@ -1,4 +1,5 @@
-import { redirect, type ActionArgs, type LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";
@@ -98,11 +99,7 @@ export default function ArticleView() {
               <>
                 <FollowButton article={article} />
                 &nbsp;&nbsp;
-                <FavoriteButton
-                  favorite={article.favorited}
-                  favoritesCount={article.favoritesCount}
-                  slug={article.slug}
-                />
+                <FavoriteButton favorite={article.favorited} favoritesCount={article.favoritesCount} />
               </>
             )}
           </div>
@@ -146,11 +143,7 @@ export default function ArticleView() {
               <>
                 <FollowButton article={article} />
                 &nbsp;&nbsp;
-                <FavoriteButton
-                  favorite={article.favorited}
-                  favoritesCount={article.favoritesCount}
-                  slug={article.slug}
-                />
+                <FavoriteButton favorite={article.favorited} favoritesCount={article.favoritesCount} />
               </>
             )}
           </div>

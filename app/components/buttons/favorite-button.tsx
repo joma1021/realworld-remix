@@ -1,15 +1,7 @@
-import { Form, useNavigation, useSubmit } from "@remix-run/react";
-import { useState } from "react";
+import { Form, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
 
-export function FavoriteButton({
-  favorite,
-  favoritesCount,
-  slug,
-}: {
-  favorite: boolean;
-  favoritesCount: number;
-  slug: string;
-}) {
+export function FavoriteButton({ favorite, favoritesCount }: { favorite: boolean; favoritesCount: number }) {
   const navigation = useNavigation();
   return (
     <Form style={{ display: "inline-block" }} method="post" preventScrollReset={true}>
@@ -37,7 +29,6 @@ export function FavoriteButtonSmall({
   favoritesCount: number;
   slug: string;
 }) {
-  const submit = useSubmit();
   const navigation = useNavigation();
 
   const [favoriteState, setFavoriteState] = useState({
@@ -46,36 +37,32 @@ export function FavoriteButtonSmall({
   });
 
   function handleOnSubmit() {
+    // Optimistic UI: update state directly
     if (favoriteState.favorite) {
       setFavoriteState({ favorite: false, favoritesCount: favoriteState.favoritesCount - 1 });
-
-      submit(JSON.stringify({ slug: slug, action: "UNFAVORITE" }), {
-        replace: true,
-        encType: "application/json",
-        method: "post",
-        action: "/favorite-mw",
-        preventScrollReset: true,
-      });
     } else {
       setFavoriteState({ favorite: true, favoritesCount: favoriteState.favoritesCount + 1 });
-      submit(JSON.stringify({ slug: slug, action: "FAVORITE" }), {
-        replace: true,
-        encType: "application/json",
-        action: "/favorite-mw",
-        method: "post",
-        preventScrollReset: true,
-      });
     }
   }
+
   return (
-    <button
-      className={`btn btn-${!favoriteState.favorite ? "outline-" : ""}primary btn-sm pull-xs-right `}
-      type="button"
-      disabled={navigation.state === "submitting"}
-      onClick={handleOnSubmit}
+    <Form
+      className="pull-xs-right"
+      method="post"
+      preventScrollReset={true}
+      action={`/favorite-mw?action=${favorite ? "UNFAVORITE" : "FAVORITE"}&slug=${slug}`}
+      onSubmit={handleOnSubmit}
     >
-      <i className="ion-heart"></i>
-      <span className="counter"> {favoriteState.favoritesCount}</span>
-    </button>
+      <button
+        className={`btn btn-${!favoriteState.favorite ? "outline-" : ""}primary btn-sm pull-xs-right`}
+        type="submit"
+        disabled={navigation.state === "submitting"}
+        name="action"
+        value={favorite ? "UNFAVORITE" : "FAVORITE"}
+      >
+        <i className="ion-heart"></i>
+        <span className="counter"> {favoriteState.favoritesCount}</span>
+      </button>
+    </Form>
   );
 }
