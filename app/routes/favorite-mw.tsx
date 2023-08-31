@@ -17,7 +17,6 @@ export const action = async ({ request }: ActionArgs) => {
   switch (action) {
     case "FAVORITE": {
       await favoriteArticle(slug, token);
-      console.log("i was in redirect");
       return redirect(redirectUrl);
     }
     case "UNFAVORITE": {
