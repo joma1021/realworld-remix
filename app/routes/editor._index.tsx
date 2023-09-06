@@ -62,7 +62,6 @@ export default function CreateEditor() {
   function removeTag(tag: string): void {
     const newTagList = tagListState.filter((t) => t != tag);
     setTagListState(newTagList);
-    (window.document.getElementById("tags") as HTMLInputElement).value = newTagList.toString();
   }
 
   function updateTags(event: any): void {
@@ -80,28 +79,13 @@ export default function CreateEditor() {
             <Form method="post">
               <fieldset>
                 <fieldset className="form-group">
-                  <input
-                    type="text"
-                    className="form-control form-control-lg"
-                    name="title"
-                    placeholder="Article Title"
-                  />
+                  <input type="text" className="form-control form-control-lg" name="title" placeholder="Article Title" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="description"
-                    placeholder="What's this article about?"
-                  />
+                  <input type="text" className="form-control" name="description" placeholder="What's this article about?" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <textarea
-                    className="form-control"
-                    name="body"
-                    rows={8}
-                    placeholder="Write your article (in markdown)"
-                  ></textarea>
+                  <textarea className="form-control" name="body" rows={8} placeholder="Write your article (in markdown)"></textarea>
                 </fieldset>
 
                 <fieldset className="form-group">
@@ -111,6 +95,7 @@ export default function CreateEditor() {
                     id="tags"
                     name="tags"
                     placeholder="Enter tags"
+                    defaultValue={tagListState}
                     onChange={updateTags}
                   />
                   <div className="tag-list">
@@ -121,11 +106,7 @@ export default function CreateEditor() {
                     ))}
                   </div>
                 </fieldset>
-                <button
-                  className="btn btn-lg pull-xs-right btn-primary"
-                  type="submit"
-                  disabled={navigation.state === "submitting"}
-                >
+                <button className="btn btn-lg pull-xs-right btn-primary" type="submit" disabled={navigation.state === "submitting"}>
                   Publish Article
                 </button>
               </fieldset>

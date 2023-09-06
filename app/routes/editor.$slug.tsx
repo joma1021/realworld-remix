@@ -66,7 +66,6 @@ export default function ArticleEditor() {
   function removeTag(tag: string): void {
     const newTagList = tagListState.filter((t) => t != tag);
     setTagListState(newTagList);
-    (window.document.getElementById("tags") as HTMLInputElement).value = newTagList.toString();
   }
 
   function updateTags(event: any): void {
@@ -84,31 +83,13 @@ export default function ArticleEditor() {
             <Form method="post">
               <fieldset>
                 <fieldset className="form-group">
-                  <input
-                    type="text"
-                    className="form-control form-control-lg"
-                    name="title"
-                    placeholder="Article Title"
-                    defaultValue={article.title}
-                  />
+                  <input type="text" className="form-control form-control-lg" name="title" placeholder="Article Title" defaultValue={article.title} />
                 </fieldset>
                 <fieldset className="form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="description"
-                    placeholder="What's this article about?"
-                    defaultValue={article.description}
-                  />
+                  <input type="text" className="form-control" name="description" placeholder="What's this article about?" defaultValue={article.description} />
                 </fieldset>
                 <fieldset className="form-group">
-                  <textarea
-                    className="form-control"
-                    name="body"
-                    rows={8}
-                    placeholder="Write your article (in markdown)"
-                    defaultValue={article.body}
-                  ></textarea>
+                  <textarea className="form-control" name="body" rows={8} placeholder="Write your article (in markdown)" defaultValue={article.body}></textarea>
                 </fieldset>
 
                 <fieldset className="form-group">
@@ -118,7 +99,7 @@ export default function ArticleEditor() {
                     id="tags"
                     name="tags"
                     placeholder="Enter tags"
-                    defaultValue={article.tagList.toString()}
+                    defaultValue={tagListState}
                     onChange={updateTags}
                   />
                   <div className="tag-list">
@@ -129,11 +110,7 @@ export default function ArticleEditor() {
                     ))}
                   </div>
                 </fieldset>
-                <button
-                  className="btn btn-lg pull-xs-right btn-primary"
-                  type="submit"
-                  disabled={navigation.state === "submitting"}
-                >
+                <button className="btn btn-lg pull-xs-right btn-primary" type="submit" disabled={navigation.state === "submitting"}>
                   Publish Article
                 </button>
               </fieldset>
