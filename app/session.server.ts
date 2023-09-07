@@ -11,6 +11,7 @@ export const sessionStorage = createCookieSessionStorage({
     httpOnly: true,
     path: "/",
     sameSite: "lax",
+    // NOTE: Usually session should be signed with a secret to prevent tampering on the client before they are sent back to the server
     // secrets: [process.env.SESSION_SECRET as string],
   },
 });

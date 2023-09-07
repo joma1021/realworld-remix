@@ -1,5 +1,5 @@
 import { Form, useNavigation } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function FavoriteButton({ favorite, favoritesCount }: { favorite: boolean; favoritesCount: number }) {
   const navigation = useNavigation();
@@ -20,15 +20,7 @@ export function FavoriteButton({ favorite, favoritesCount }: { favorite: boolean
   );
 }
 
-export function FavoriteButtonSmall({
-  favorite,
-  favoritesCount,
-  slug,
-}: {
-  favorite: boolean;
-  favoritesCount: number;
-  slug: string;
-}) {
+export function FavoriteButtonSmall({ favorite, favoritesCount, slug }: { favorite: boolean; favoritesCount: number; slug: string }) {
   const navigation = useNavigation();
 
   const [favoriteState, setFavoriteState] = useState({
@@ -37,7 +29,7 @@ export function FavoriteButtonSmall({
   });
 
   function handleOnSubmit() {
-    // Optimistic UI: update state directly
+    // NOTE: Optimistic UI -> update state directly without waiting for any response
     if (favoriteState.favorite) {
       setFavoriteState({ favorite: false, favoritesCount: favoriteState.favoritesCount - 1 });
     } else {

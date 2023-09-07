@@ -1,5 +1,5 @@
 import type { V2_MetaFunction, LoaderArgs, ActionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
 import DefaultError from "~/components/errors/default-error";
@@ -14,8 +14,6 @@ export const meta: V2_MetaFunction = () => {
 
 export async function loader({ request }: LoaderArgs) {
   const token = await getToken(request);
-  // protect route
-  if (!token) throw redirect("/register");
 
   return await getCurrentUser(token);
 }
@@ -81,54 +79,21 @@ export default function Settings() {
             <Form method="post">
               <fieldset>
                 <fieldset className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    name="image"
-                    defaultValue={user.image}
-                    placeholder="URL of profile picture"
-                  />
+                  <input className="form-control" type="text" name="image" defaultValue={user.image} placeholder="URL of profile picture" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    name="username"
-                    defaultValue={user.username}
-                    placeholder="Your Name"
-                  />
+                  <input className="form-control form-control-lg" type="text" name="username" defaultValue={user.username} placeholder="Your Name" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <textarea
-                    className="form-control form-control-lg"
-                    name="bio"
-                    defaultValue={user.bio}
-                    rows={8}
-                    placeholder="Short bio about you"
-                  ></textarea>
+                  <textarea className="form-control form-control-lg" name="bio" defaultValue={user.bio} rows={8} placeholder="Short bio about you"></textarea>
                 </fieldset>
                 <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    name="email"
-                    defaultValue={user.email}
-                    placeholder="Email"
-                  />
+                  <input className="form-control form-control-lg" type="text" name="email" defaultValue={user.email} placeholder="Email" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="password"
-                    name="password"
-                    placeholder="New Password"
-                  />
+                  <input className="form-control form-control-lg" type="password" name="password" placeholder="New Password" />
                 </fieldset>
-                <button
-                  className="btn btn-lg btn-primary pull-xs-right"
-                  type="submit"
-                  disabled={navigation.state === "submitting"}
-                >
+                <button className="btn btn-lg btn-primary pull-xs-right" type="submit" disabled={navigation.state === "submitting"}>
                   Update Settings
                 </button>
               </fieldset>

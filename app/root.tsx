@@ -1,5 +1,5 @@
 import styles from "~/styles/global.css";
-import { type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { Layout } from "./components/layout/layout";
 import { getUserSessionData } from "./session.server";
@@ -7,7 +7,15 @@ import { AuthProvider } from "./components/auth/auth-provider";
 
 export const links: LinksFunction = () => [...[{ rel: "stylesheet", href: styles }]];
 export const loader = async ({ request }: LoaderArgs) => {
+  const url = new URL(request.url);
   const userSessionData = await getUserSessionData(request);
+
+  if (!userSessionData.isLoggedIn) {
+    if (url.pathname === "/settings") throw redirect("/register");
+    if (url.pathname === "/editor") throw redirect("/register");
+    if (url.pathname.includes("/editor/")) throw redirect("/register");
+  }
+
   return userSessionData;
 };
 

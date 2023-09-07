@@ -5,11 +5,6 @@ import { UserContext } from "../auth/auth-provider";
 export default function Header() {
   const userSession = useContext(UserContext);
   const { pathname } = useLocation();
-  // const [path, setPath] = useState(pathname);
-
-  // useEffect(() => {
-  //   setPath(pathname);
-  // }, [pathname]);
 
   return (
     <nav className="navbar navbar-light">
@@ -38,11 +33,7 @@ export default function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link
-                prefetch="intent"
-                className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`}
-                to={`/profile/${userSession.username}/articles`}
-              >
+              <Link prefetch="intent" className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`} to={`/profile/${userSession.username}/articles`}>
                 {userSession.image && <img width={25} height={25} src={userSession.image} className="user-pic" />}
                 {userSession.username}
               </Link>
