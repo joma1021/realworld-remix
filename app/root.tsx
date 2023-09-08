@@ -1,5 +1,5 @@
 import styles from "~/styles/global.css";
-import { redirect, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import { redirect, type LinksFunction, type LoaderArgs } from "@vercel/remix";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { Layout } from "./components/layout/layout";
 import { getUserSessionData } from "./session.server";

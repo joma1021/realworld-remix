@@ -1,4 +1,4 @@
-import { redirect, type ActionArgs, type LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs, V2_MetaFunction } from "@vercel/remix";
 import { Link, Outlet, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";

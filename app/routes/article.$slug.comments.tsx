@@ -1,4 +1,4 @@
-import { redirect, type ActionArgs, type LoaderArgs } from "@remix-run/node";
+import { redirect, type ActionArgs, type LoaderArgs } from "@vercel/remix";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext } from "react";
 import { validateInput } from "~/common/helpers";
@@ -54,13 +54,7 @@ export default function Comments() {
             </div>
             <div className="card-footer">
               <img src={userSession.image} className="comment-author-img" />
-              <button
-                className="btn btn-sm btn-primary"
-                type="submit"
-                name="action"
-                value="CREATE"
-                disabled={navigation.state === "submitting"}
-              >
+              <button className="btn btn-sm btn-primary" type="submit" name="action" value="CREATE" disabled={navigation.state === "submitting"}>
                 Post Comment
               </button>
             </div>
@@ -96,12 +90,7 @@ export default function Comments() {
               {comment.author.username == userSession.username && (
                 <span className="mod-options">
                   <Form method="post" preventScrollReset={true}>
-                    <button
-                      type="submit"
-                      name="action"
-                      value={comment.id}
-                      style={{ border: "none", outline: "none", backgroundColor: "transparent" }}
-                    >
+                    <button type="submit" name="action" value={comment.id} style={{ border: "none", outline: "none", backgroundColor: "transparent" }}>
                       <i className="ion-trash-a"></i>
                     </button>
                   </Form>

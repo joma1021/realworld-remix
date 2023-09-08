@@ -1,4 +1,4 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix";
 import { Link, useLoaderData } from "@remix-run/react";
 import { ArticlePreview } from "~/components/article/article-preview";
 import DefaultError from "~/components/errors/default-error";
@@ -59,12 +59,7 @@ export default function ProfileArticles() {
               .fill(null)
               .map((_, i) => (
                 <li className={`page-item  ${i == currentPageNumber - 1 ? "active" : ""}`} key={i}>
-                  <Link
-                    prefetch="intent"
-                    className="page-link"
-                    style={{ cursor: "pointer" }}
-                    to={`?filter=${filter}&page=${i + 1}`}
-                  >
+                  <Link prefetch="intent" className="page-link" style={{ cursor: "pointer" }} to={`?filter=${filter}&page=${i + 1}`}>
                     {i + 1}
                   </Link>
                 </li>

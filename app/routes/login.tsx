@@ -1,5 +1,5 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { ActionArgs, V2_MetaFunction } from "@vercel/remix";
+import { json } from "@vercel/remix";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
 import FormError from "~/components/errors/form-error";
@@ -64,18 +64,9 @@ export default function Login() {
                 <input className="form-control form-control-lg" name="email" type="email" placeholder="Email" />
               </fieldset>
               <fieldset className="form-group">
-                <input
-                  className="form-control form-control-lg"
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                />
+                <input className="form-control form-control-lg" name="password" type="password" placeholder="Password" />
               </fieldset>
-              <button
-                type="submit"
-                className="btn btn-lg btn-primary pull-xs-right"
-                disabled={navigation.state === "submitting"}
-              >
+              <button type="submit" className="btn btn-lg btn-primary pull-xs-right" disabled={navigation.state === "submitting"}>
                 Sign in
               </button>
             </Form>

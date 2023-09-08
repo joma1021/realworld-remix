@@ -1,5 +1,5 @@
-import { redirect } from "@remix-run/node";
-import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@vercel/remix";
+import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@vercel/remix";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useContext } from "react";
 import { UserContext } from "~/components/auth/auth-provider";

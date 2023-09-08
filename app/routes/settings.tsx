@@ -1,5 +1,5 @@
-import type { V2_MetaFunction, LoaderArgs, ActionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { V2_MetaFunction, LoaderArgs, ActionArgs } from "@vercel/remix";
+import { json } from "@vercel/remix";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
 import DefaultError from "~/components/errors/default-error";

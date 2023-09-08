@@ -1,4 +1,4 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 import { useContext } from "react";
 import { getGlobalArticles, getTags, getYourArticles } from "~/services/article-service";
@@ -32,10 +32,7 @@ export async function loader({ request }: LoaderArgs) {
     }
 
     default: {
-      const [articles, tags] = await Promise.all([
-        getGlobalArticles(token, Number(currentPageNumber), filter),
-        getTags(),
-      ]);
+      const [articles, tags] = await Promise.all([getGlobalArticles(token, Number(currentPageNumber), filter), getTags()]);
       return { articles, tags, currentPageNumber, filter };
     }
   }
