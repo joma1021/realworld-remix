@@ -1,7 +1,8 @@
-import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@vercel/remix";
+import { redirect } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 import { useContext } from "react";
-import { getGlobalArticles, getTags, getYourArticles } from "~/services/article-service";
+import { favoriteArticle, getGlobalArticles, getTags, getYourArticles, unfavoriteArticle } from "~/services/article-service";
 import TagNavbar from "~/components/tag/tag-navbar";
 import { ArticleList } from "~/components/article/article-list";
 import { getToken, getUserSessionData } from "~/session.server";
@@ -37,6 +38,31 @@ export async function loader({ request }: LoaderArgs) {
     }
   }
 }
+
+export const action = async ({ request }: ActionArgs) => {
+  const formData = await request.formData();
+  const token = await getToken(request);
+
+  if (!token) {
+    return redirect("/register");
+  }
+
+  const action = (formData.get("action") as string).split(",");
+  switch (action[0]) {
+    case "FAVORITE": {
+      const slug = action[1];
+      return await favoriteArticle(slug, token);
+    }
+    case "UNFAVORITE": {
+      const slug = action[1];
+      return await unfavoriteArticle(slug, token);
+    }
+
+    default: {
+      return null;
+    }
+  }
+};
 
 function ArticleOverview() {
   const { articles, tags, currentPageNumber, filter } = useLoaderData<typeof loader>();

@@ -1,7 +1,8 @@
 import { redirect } from "@vercel/remix";
 import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@vercel/remix";
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext } from "react";
+import { validateInput } from "~/common/helpers";
 import { UserContext } from "~/components/auth/auth-provider";
 import DeleteButton from "~/components/buttons/delete-button";
 import EditButton from "~/components/buttons/edit-button";
@@ -9,6 +10,7 @@ import { FavoriteButton } from "~/components/buttons/favorite-button";
 import { FollowButton } from "~/components/buttons/follow-button";
 import DefaultError from "~/components/errors/default-error";
 import { deleteArticle, favoriteArticle, getArticle, unfavoriteArticle } from "~/services/article-service";
+import { createComment, deleteComment, getComments } from "~/services/comment-service";
 import { followUser, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
@@ -20,7 +22,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
   const slug = params.slug as string;
 
-  return await getArticle(slug, token);
+  const [article, comments] = await Promise.all([getArticle(slug, token), getComments(slug, token)]);
+
+  return { article, comments };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -32,9 +36,9 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const slug = params.slug as string;
   const formData = await request.formData();
-  const action = formData.get("action");
+  const action = (formData.get("action") as string).split(",");
 
-  switch (action) {
+  switch (action[0]) {
     case "EDIT": {
       return redirect(`/editor/${slug}`);
     }
@@ -42,25 +46,30 @@ export const action = async ({ request, params }: ActionArgs) => {
       await deleteArticle(slug, token);
       return redirect("/");
     }
-    case "FOLLOW": {
-      const url = new URL(request.url);
-      const username = url.searchParams.get("username")?.toString();
-      if (username) await followUser(username, token);
-      return redirect(request.url + "/comments");
-    }
-    case "UNFOLLOW": {
-      const url = new URL(request.url);
-      const username = url.searchParams.get("username")?.toString();
-      if (username) await unfollowUser(username, token);
-      return redirect(request.url + "/comments");
-    }
     case "FAVORITE": {
-      await favoriteArticle(slug, token);
-      return redirect(request.url + "/comments");
+      return await favoriteArticle(slug, token);
     }
     case "UNFAVORITE": {
-      await unfavoriteArticle(slug, token);
-      return redirect(request.url + "/comments");
+      return await unfavoriteArticle(slug, token);
+    }
+    case "CREATE": {
+      const comment = formData.get("comment");
+      if (!validateInput(comment)) {
+        return null;
+      }
+      return await createComment(slug, comment as string, token);
+    }
+    case "DELETECOMMENT": {
+      const id = action[1];
+      return await deleteComment(slug, Number(id), token);
+    }
+    case "FOLLOW": {
+      const username = action[1];
+      return await followUser(username, token);
+    }
+    case "UNFOLLOW": {
+      const username = action[1];
+      return await unfollowUser(username, token);
     }
     default: {
       return null;
@@ -69,8 +78,9 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 export default function ArticleView() {
-  const article = useLoaderData<typeof loader>();
+  const { article, comments } = useLoaderData<typeof loader>();
   const userSession = useContext(UserContext);
+  const navigation = useNavigation();
   return (
     <div className="article-page">
       <div className="banner">
@@ -78,12 +88,12 @@ export default function ArticleView() {
           <h1>{article.title}</h1>
 
           <div className="article-meta">
-            <Link prefetch="intent" to={`/profile/${article.author.username}/articles`}>
+            <Link prefetch="intent" to={`/profile/${article.author.username}`}>
               <img src={article.author.image} />
             </Link>
 
             <div className="info">
-              <Link prefetch="intent" to={`/profile/${article.author.username}/articles`} className="author">
+              <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
                 {article.author.username}
               </Link>
               <span className="date">{article.createdAt}</span>
@@ -97,7 +107,7 @@ export default function ArticleView() {
               </>
             ) : (
               <>
-                <FollowButton article={article} />
+                <FollowButton following={article.author.following} username={article.author.username} />
                 &nbsp;&nbsp;
                 <FavoriteButton favorite={article.favorited} favoritesCount={article.favoritesCount} />
               </>
@@ -124,11 +134,11 @@ export default function ArticleView() {
 
         <div className="article-actions">
           <div className="article-meta">
-            <Link prefetch="intent" to={`/profile/${article.author.username}/articles`}>
+            <Link prefetch="intent" to={`/profile/${article.author.username}`}>
               <img src={article.author.image} />
             </Link>
             <div className="info">
-              <Link prefetch="intent" to={`/profile/${article.author.username}/articles`} className="author">
+              <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
                 {article.author.username}
               </Link>
               <span className="date">{article.createdAt}</span>
@@ -141,14 +151,74 @@ export default function ArticleView() {
               </>
             ) : (
               <>
-                <FollowButton article={article} />
+                <FollowButton following={article.author.following} username={article.author.username} />
                 &nbsp;&nbsp;
                 <FavoriteButton favorite={article.favorited} favoritesCount={article.favoritesCount} />
               </>
             )}
           </div>
         </div>
-        <Outlet />
+        <div className="row">
+          <div className="col-xs-12 col-md-8 offset-md-2">
+            {userSession.isLoggedIn ? (
+              <Form preventScrollReset={true} method="post" className="card comment-form" key={Date()}>
+                <div className="card-block">
+                  <textarea className="form-control" name="comment" placeholder="Write a comment..." rows={3}></textarea>
+                </div>
+                <div className="card-footer">
+                  <img src={userSession.image} className="comment-author-img" />
+                  <button className="btn btn-sm btn-primary" type="submit" name="action" value="CREATE" disabled={navigation.state === "submitting"}>
+                    Post Comment
+                  </button>
+                </div>
+              </Form>
+            ) : (
+              <div className="row">
+                <div className="col-xs-12 col-md-8 offset-md-2">
+                  <p>
+                    <Link to="/login">Sign in</Link>
+                    &nbsp; or &nbsp;
+                    <Link to="/register">Sign up</Link>
+                    &nbsp; to add comments on this article.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {comments.map((comment) => (
+              <div className="card" key={comment.id}>
+                <div className="card-block">
+                  <p className="card-text">{comment.body}</p>
+                </div>
+
+                <div className="card-footer">
+                  <Link to={`/profile/${comment.author.username}`} className="comment-author">
+                    <img src={comment.author.image} className="comment-author-img" />
+                  </Link>
+                  &nbsp;
+                  <Link to={`/profile/${comment.author.username}`} className="comment-author">
+                    {comment.author.username}
+                  </Link>
+                  <span className="date-posted">{comment.createdAt}</span>
+                  {comment.author.username == userSession.username && (
+                    <span className="mod-options">
+                      <Form method="post" preventScrollReset={true}>
+                        <button
+                          type="submit"
+                          name="action"
+                          value={"DELETECOMMENT," + comment.id}
+                          style={{ border: "none", outline: "none", backgroundColor: "transparent" }}
+                        >
+                          <i className="ion-trash-a"></i>
+                        </button>
+                      </Form>
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

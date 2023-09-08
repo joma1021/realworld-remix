@@ -1,8 +1,12 @@
-import { redirect, type ActionArgs, type LoaderArgs, V2_MetaFunction } from "@vercel/remix";
-import { Link, Outlet, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
+import { redirect } from "@vercel/remix";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@vercel/remix";
+import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext } from "react";
+import { ArticlePreview } from "~/components/article/article-preview";
 import { UserContext } from "~/components/auth/auth-provider";
 import { FollowActionButton } from "~/components/buttons/follow-button";
+import type { ArticleData } from "~/models/article";
+import { favoriteArticle, getProfileArticles, unfavoriteArticle } from "~/services/article-service";
 import { followUser, getProfile, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
@@ -13,8 +17,13 @@ export const meta: V2_MetaFunction = () => {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const token = await getToken(request);
   const username = params.username as string;
+  const url = new URL(request.url);
+  const currentPageNumber = Number(url.searchParams.get("page") ?? "1");
+  const filter = url.searchParams.get("filter") ?? "my";
 
-  return await getProfile(username, token);
+  const [profile, profileArticles] = await Promise.all([getProfile(username, token), getProfileArticles(username, filter, token, currentPageNumber)]);
+
+  return { profile, profileArticles, filter, currentPageNumber };
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -26,15 +35,21 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const formData = await request.formData();
   const username = params.username as string;
-  const action = formData.get("action");
-  switch (action) {
+  const action = (formData.get("action") as string).split(",");
+  switch (action[0]) {
     case "FOLLOW": {
-      await followUser(username, token);
-      return redirect(request.url + "/articles");
+      return await followUser(username, token);
     }
     case "UNFOLLOW": {
-      await unfollowUser(username, token);
-      return redirect(request.url + "/articles");
+      return await unfollowUser(username, token);
+    }
+    case "FAVORITE": {
+      const slug = action[1];
+      return await favoriteArticle(slug, token);
+    }
+    case "UNFAVORITE": {
+      const slug = action[1];
+      return await unfavoriteArticle(slug, token);
     }
 
     default: {
@@ -44,7 +59,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 export default function Profile() {
-  const profile = useLoaderData<typeof loader>();
+  const { profile, profileArticles, filter, currentPageNumber } = useLoaderData<typeof loader>();
   const userSession = useContext(UserContext);
 
   return (
@@ -70,7 +85,50 @@ export default function Profile() {
         </div>
       </div>
 
-      <Outlet />
+      <div className="container">
+        <div className="row">
+          <div className="col-xs-12 col-md-10 offset-md-1">
+            <div className="articles-toggle">
+              <ul className="nav nav-pills outline-active">
+                <li className="nav-item">
+                  <Link prefetch="intent" className={`nav-link ${filter === "my" ? "active" : ""}`} to="?filter=my">
+                    My Articles
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link prefetch="intent" className={`nav-link ${filter === "fav" ? "active" : ""}`} to="?filter=fav">
+                    Favorited Articles
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              {profileArticles.articles.length == 0 ? (
+                <div>No articles are here... yet.</div>
+              ) : (
+                <ul>
+                  {(profileArticles.articles as ArticleData[]).map((article) => (
+                    <ArticlePreview article={article} key={article.slug} />
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <ul className="pagination">
+              {Array(Math.ceil(profileArticles.articlesCount / 5))
+                .fill(null)
+                .map((_, i) => (
+                  <li className={`page-item  ${i == currentPageNumber - 1 ? "active" : ""}`} key={i}>
+                    <Link prefetch="intent" className="page-link" style={{ cursor: "pointer" }} to={`?filter=${filter}&page=${i + 1}`}>
+                      {i + 1}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

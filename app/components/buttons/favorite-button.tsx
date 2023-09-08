@@ -13,7 +13,7 @@ export function FavoriteButton({ favorite, favoritesCount }: { favorite: boolean
         disabled={navigation.state === "submitting"}
       >
         <i className="ion-heart"></i>
-        &nbsp; {favorite ? "Unfavorite" : "Favorite"} Post
+        &nbsp; {favorite ? "UNFAVORITE" : "FAVORITE"} Post
         <span className="counter"> ({favoritesCount})</span>
       </button>
     </Form>
@@ -38,19 +38,13 @@ export function FavoriteButtonSmall({ favorite, favoritesCount, slug }: { favori
   }
 
   return (
-    <Form
-      className="pull-xs-right"
-      method="post"
-      preventScrollReset={true}
-      action={`/favorite-mw?action=${favorite ? "UNFAVORITE" : "FAVORITE"}&slug=${slug}`}
-      onSubmit={handleOnSubmit}
-    >
+    <Form className="pull-xs-right" method="post" preventScrollReset={true} onSubmit={handleOnSubmit}>
       <button
         className={`btn btn-${!favoriteState.favorite ? "outline-" : ""}primary btn-sm pull-xs-right`}
         type="submit"
         disabled={navigation.state === "submitting"}
         name="action"
-        value={favorite ? "UNFAVORITE" : "FAVORITE"}
+        value={favoriteState.favorite ? `UNFAVORITE,${slug}` : `FAVORITE,${slug}`}
       >
         <i className="ion-heart"></i>
         <span className="counter"> {favoriteState.favoritesCount}</span>
