@@ -30,6 +30,7 @@ export async function followUser(username: string, token?: string): Promise<Resp
 }
 
 export async function unfollowUser(username: string, token?: string): Promise<Response> {
+  console.log(`DELETE: ${BASE_URL}/profiles/${username}/follow`);
   return fetch(`${BASE_URL}/profiles/${username}/follow`, {
     method: "DELETE",
     headers: setHeaders(token),

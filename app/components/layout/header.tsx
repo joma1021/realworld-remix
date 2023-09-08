@@ -33,7 +33,7 @@ export default function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`} to={`/profile/${userSession.username}/articles`}>
+              <Link prefetch="intent" className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`} to={`/profile/${userSession.username}`}>
                 {userSession.image && <img width={25} height={25} src={userSession.image} className="user-pic" />}
                 {userSession.username}
               </Link>
