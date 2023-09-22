@@ -1,0 +1,16 @@
+services:
+  realworld-backend:
+    build:
+      dockerfile: ./Dockerfile
+    image: realworld-backend
+    ports:
+      - "8080:8080"
+
+  realworld-remix:
+    build:
+      dockerfile: ./Dockerfile
+    image: realworld-remix
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "realworld-backend"

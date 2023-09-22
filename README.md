@@ -50,3 +50,31 @@ Make sure to deploy the output of `remix build`
 
 - `build/`
 - `public/build/`
+
+# Docker
+
+## Build image:
+
+```shell
+docker build -t realworld-remix .
+```
+
+## Run docker:
+
+```shell
+docker run -p 4321:4321 realworld-remix
+```
+
+## Start FE with BE:
+
+src/common/api.ts: export const BASE_URL = "http://realworld-backend:8080";
+
+```shell
+docker-compose up -d
+```
+
+## Add Example Data
+
+```shell
+docker exec -d realworld-remix-realworld-backend-1 bash init.sh
+```
