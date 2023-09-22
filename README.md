@@ -62,7 +62,7 @@ docker build -t realworld-remix .
 ## Run docker:
 
 ```shell
-docker run -p 4321:4321 realworld-remix
+docker run -p 3000:3000 realworld-remix
 ```
 
 ## Start FE with BE:
