@@ -15,25 +15,30 @@ export default function Header() {
         {userSession?.username ? (
           <ul className="nav navbar-nav pull-xs-right">
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/" id="home">
                 Home
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/editor" ? "active" : ""}`} to="/editor">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/editor" ? "active" : ""}`} to="/editor" id="editor">
                 <i className="ion-compose"></i>&nbsp;New Article{" "}
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/settings" ? "active" : ""}`} to="/settings">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/settings" ? "active" : ""}`} to="/settings" id="settings">
                 {" "}
                 <i className="ion-gear-a"></i>&nbsp;Settings{" "}
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`} to={`/profile/${userSession.username}`}>
+              <Link
+                prefetch="intent"
+                className={`nav-link ${pathname.includes("/profile") ? "active" : ""}`}
+                to={`/profile/${userSession.username}`}
+                id="profile"
+              >
                 {userSession.image && <img width={25} height={25} src={userSession.image} className="user-pic" />}
                 {userSession.username}
               </Link>
@@ -42,17 +47,17 @@ export default function Header() {
         ) : (
           <ul className="nav navbar-nav pull-xs-right">
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/" ? "active" : ""}`} to="/" id="home">
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/login" ? "active" : ""}`} to="/login">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/login" ? "active" : ""}`} to="/login" id="login">
                 Sign in
               </Link>
             </li>
             <li className="nav-item">
-              <Link prefetch="intent" className={`nav-link ${pathname == "/register" ? "active" : ""}`} to="/register">
+              <Link prefetch="intent" className={`nav-link ${pathname == "/register" ? "active" : ""}`} to="/register" id="register">
                 Sign up
               </Link>
             </li>
