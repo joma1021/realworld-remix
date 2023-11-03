@@ -1,4 +1,4 @@
-import type { ActionArgs, V2_MetaFunction } from "@vercel/remix";
+import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
@@ -7,11 +7,11 @@ import type { LoginCredentials } from "~/models/auth";
 import { login } from "~/services/auth-service";
 import { createUserSession } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Login" }];
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");

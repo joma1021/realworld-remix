@@ -1,5 +1,5 @@
 import { redirect } from "@vercel/remix";
-import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@vercel/remix";
+import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { useContext } from "react";
 import { validateInput } from "~/common/helpers";
@@ -14,11 +14,11 @@ import { createComment, deleteComment, getComments } from "~/services/comment-se
 import { followUser, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Article" }];
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   const slug = params.slug as string;
 
@@ -27,7 +27,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return { article, comments };
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
 
   if (!token) {
@@ -47,17 +47,19 @@ export const action = async ({ request, params }: ActionArgs) => {
       return redirect("/");
     }
     case "FAVORITE": {
-      return await favoriteArticle(slug, token);
+      await favoriteArticle(slug, token);
+      return null;
     }
     case "UNFAVORITE": {
-      return await unfavoriteArticle(slug, token);
+      await unfavoriteArticle(slug, token);
+      return null;
     }
     case "CREATE": {
       const comment = formData.get("comment");
-      if (!validateInput(comment)) {
+      if (validateInput(comment)) {
+        await createComment(slug, comment as string, token);
         return null;
       }
-      return await createComment(slug, comment as string, token);
     }
     case "DELETECOMMENT": {
       const id = action[1];
@@ -65,11 +67,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     }
     case "FOLLOW": {
       const username = action[1];
-      return await followUser(username, token);
+      await followUser(username, token);
+      return null;
     }
     case "UNFOLLOW": {
       const username = action[1];
-      return await unfollowUser(username, token);
+      await unfollowUser(username, token);
+      return null;
     }
     default: {
       return null;

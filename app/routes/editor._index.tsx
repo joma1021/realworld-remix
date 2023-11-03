@@ -1,4 +1,4 @@
-import type { ActionArgs, V2_MetaFunction } from "@vercel/remix";
+import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { useState } from "react";
@@ -9,11 +9,11 @@ import type { EditArticleData } from "~/models/article";
 import { createArticle } from "~/services/article-service";
 import { getToken } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Editor" }];
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const title = formData.get("title");
   const description = formData.get("description");
