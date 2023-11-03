@@ -1,4 +1,4 @@
-import type { V2_MetaFunction, LoaderArgs, ActionArgs } from "@remix-run/node";
+import type { MetaFunction, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
@@ -8,17 +8,17 @@ import type { UpdateUser } from "~/models/user";
 import { getCurrentUser, updateUser } from "~/services/auth-service";
 import { createUserSession, getToken } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Settings" }];
 };
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const token = await getToken(request);
 
   return await getCurrentUser(token);
 }
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const token = await getToken(request);
   const formData = await request.formData();
   const email = formData.get("email");
@@ -99,7 +99,7 @@ export default function Settings() {
               </fieldset>
             </Form>
             <hr />
-            <Form action="/logout-mw" method="post">
+            <Form action="/logout_mw" method="post">
               <button className="btn btn-outline-danger">Or click here to logout.</button>
             </Form>
           </div>

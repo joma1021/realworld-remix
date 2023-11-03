@@ -1,4 +1,4 @@
-import type { V2_MetaFunction, ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
 import { useContext } from "react";
@@ -6,15 +6,15 @@ import { ArticlePreview } from "~/components/article/article-preview";
 import { UserContext } from "~/components/auth/auth-provider";
 import { FollowActionButton } from "~/components/buttons/follow-button";
 import type { ArticleData } from "~/models/article";
-import { favoriteArticle, getProfileArticles, unfavoriteArticle } from "~/services/article-service";
+import { getProfileArticles } from "~/services/article-service";
 import { followUser, getProfile, unfollowUser } from "~/services/profile-service";
 import { getToken } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Profile" }];
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   const username = params.username as string;
   const url = new URL(request.url);
@@ -26,7 +26,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return { profile, profileArticles, filter, currentPageNumber };
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
 
   if (!token) {
@@ -38,20 +38,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   const action = (formData.get("action") as string).split(",");
   switch (action[0]) {
     case "FOLLOW": {
-      return await followUser(username, token);
+      await followUser(username, token);
+      return null;
     }
     case "UNFOLLOW": {
-      return await unfollowUser(username, token);
+      await unfollowUser(username, token);
+      return null;
     }
-    case "FAVORITE": {
-      const slug = action[1];
-      return await favoriteArticle(slug, token);
-    }
-    case "UNFAVORITE": {
-      const slug = action[1];
-      return await unfavoriteArticle(slug, token);
-    }
-
     default: {
       return null;
     }
