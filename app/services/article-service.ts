@@ -57,12 +57,7 @@ export async function getYourArticles(token?: string, page?: number): Promise<Ar
   return await response.json();
 }
 
-export async function getProfileArticles(
-  username: string,
-  tab: string,
-  token?: string,
-  page?: number
-): Promise<ArticlesDTO> {
+export async function getProfileArticles(username: string, tab: string, token?: string, page?: number): Promise<ArticlesDTO> {
   const offset = page ? (page - 1) * 5 : 0;
 
   const searchParams =
