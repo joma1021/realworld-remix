@@ -1,4 +1,4 @@
-import type { ActionArgs, V2_MetaFunction } from "@remix-run/node";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { validateInput } from "~/common/helpers";
@@ -7,11 +7,11 @@ import type { LoginCredentials } from "~/models/auth";
 import { login } from "~/services/auth-service";
 import { createUserSession } from "~/session.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: "Conduit - Login" }];
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
@@ -64,18 +64,9 @@ export default function Login() {
                 <input className="form-control form-control-lg" name="email" type="email" placeholder="Email" />
               </fieldset>
               <fieldset className="form-group">
-                <input
-                  className="form-control form-control-lg"
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                />
+                <input className="form-control form-control-lg" name="password" type="password" placeholder="Password" />
               </fieldset>
-              <button
-                type="submit"
-                className="btn btn-lg btn-primary pull-xs-right"
-                disabled={navigation.state === "submitting"}
-              >
+              <button type="submit" className="btn btn-lg btn-primary pull-xs-right" disabled={navigation.state === "submitting"}>
                 Sign in
               </button>
             </Form>
