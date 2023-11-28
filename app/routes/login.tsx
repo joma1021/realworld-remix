@@ -13,8 +13,8 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
+  const email = formData.get("email")?.toString() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
 
   if (!validateInput(email)) {
     return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
@@ -24,8 +24,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ errors: { "": ["password can't be blank"] } }, { status: 400 });
   }
   const credentials: LoginCredentials = {
-    email: email as string,
-    password: password as string,
+    email: email,
+    password: password,
   };
 
   const response = await login(credentials);

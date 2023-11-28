@@ -15,17 +15,17 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  const slug = params.slug as string;
+  const slug = params.slug ?? "";
   return await getArticle(slug, token);
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const slug = params.slug as string;
+  const slug = params.slug ?? "";
   const formData = await request.formData();
-  const title = formData.get("title");
-  const description = formData.get("description");
-  const body = formData.get("body");
-  const tags = formData.get("tags") as string;
+  const title = formData.get("title")?.toString() ?? "";
+  const description = formData.get("description")?.toString() ?? "";
+  const body = formData.get("body")?.toString() ?? "";
+  const tags = formData.get("tags")?.toString() ?? "";
   const tagList = tags.split(",");
 
   if (!validateInput(title)) {
@@ -39,9 +39,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   const editArticle: EditArticleData = {
-    title: title as string,
-    description: description as string,
-    body: body as string,
+    title: title,
+    description: description,
+    body: body,
     tagList: tagList,
   };
   const token = await getToken(request);

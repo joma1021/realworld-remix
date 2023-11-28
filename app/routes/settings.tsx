@@ -21,11 +21,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const token = await getToken(request);
   const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const username = formData.get("username");
-  const image = formData.get("image");
-  const bio = formData.get("bio");
+  const email = formData.get("email")?.toString() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const username = formData.get("username")?.toString() ?? "";
+  const image = formData.get("image")?.toString() ?? "";
+  const bio = formData.get("bio")?.toString() ?? "";
 
   if (!validateInput(email)) {
     return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
@@ -39,13 +39,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ errors: { "": ["username can't be blank"] } }, { status: 400 });
   }
   const user: UpdateUser = {
-    username: username as string,
-    image: image as string,
-    email: email as string,
+    username: username,
+    image: image,
+    email: email,
   };
 
-  if (validateInput(bio)) user.bio = bio as string;
-  if (validateInput(password)) user.password = password as string;
+  if (validateInput(bio)) user.bio = bio;
+  if (validateInput(password)) user.password = password;
 
   const response = await updateUser(user, token);
   const data = await response.json();

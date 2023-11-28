@@ -20,7 +20,7 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  const slug = params.slug as string;
+  const slug = params.slug ?? "";
 
   const [article, comments] = await Promise.all([getArticle(slug, token), getComments(slug, token)]);
 
@@ -34,9 +34,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     return redirect("/register");
   }
 
-  const slug = params.slug as string;
+  const slug = params.slug ?? "";
   const formData = await request.formData();
-  const action = (formData.get("action") as string).split(",");
+  const action = (formData.get("action")?.toString() ?? "").split(",");
 
   switch (action[0]) {
     case "EDIT": {
@@ -55,9 +55,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       return null;
     }
     case "CREATE": {
-      const comment = formData.get("comment");
+      const comment = formData.get("comment")?.toString() ?? "";
       if (validateInput(comment)) {
-        await createComment(slug, comment as string, token);
+        await createComment(slug, comment, token);
         return null;
       }
     }
