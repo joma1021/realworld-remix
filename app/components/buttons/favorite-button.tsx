@@ -25,7 +25,7 @@ export function FavoriteButtonSmall({ favorite, favoritesCount, slug }: { favori
 
   // NOTE: Optimistic UI -> update state directly without waiting for any response
   if (fetcher.state == "loading") {
-    const action = fetcher.formData?.get("action") as string;
+    const action = fetcher.formData.get("action")?.toString() ?? "";
     if (action === `FAVORITE,${slug}`) {
       favorite = true;
       favoritesCount += 1;
