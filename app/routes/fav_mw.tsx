@@ -11,7 +11,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return redirect("/register");
   }
 
-  const action = (formData.get("action") as string).split(",");
+  const action = (formData.get("action")?.toString() ?? "").split(",");
 
   if (action[0] === "FAVORITE") {
     const slug = action[1];

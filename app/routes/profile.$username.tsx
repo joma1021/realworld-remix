@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  const username = params.username as string;
+  const username = params.username ?? "";
   const url = new URL(request.url);
   const currentPageNumber = Number(url.searchParams.get("page") ?? "1");
   const filter = url.searchParams.get("filter") ?? "my";
@@ -34,8 +34,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   const formData = await request.formData();
-  const username = params.username as string;
-  const action = (formData.get("action") as string).split(",");
+  const username = params.username ?? "";
+  const action = (formData.get("action")?.toString() ?? "").split(",");
   switch (action[0]) {
     case "FOLLOW": {
       await followUser(username, token);
