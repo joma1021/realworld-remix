@@ -30,10 +30,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return data({ errors: { "": ["email can't be blank"] } }, { status: 400 });
   }
 
-  if (!validateInput(image)) {
-    return data({ errors: { "": ["image can't be blank"] } }, { status: 400 });
-  }
-
   if (!validateInput(username)) {
     return data({ errors: { "": ["username can't be blank"] } }, { status: 400 });
   }
@@ -78,13 +74,13 @@ export default function Settings() {
             <Form method="post">
               <fieldset>
                 <fieldset className="form-group">
-                  <input className="form-control" type="text" name="image" defaultValue={user.image} placeholder="URL of profile picture" />
+                  <input className="form-control" type="text" name="image" defaultValue={user.image ?? ""} placeholder="URL of profile picture" />
                 </fieldset>
                 <fieldset className="form-group">
                   <input className="form-control form-control-lg" type="text" name="username" defaultValue={user.username} placeholder="Your Name" />
                 </fieldset>
                 <fieldset className="form-group">
-                  <textarea className="form-control form-control-lg" name="bio" defaultValue={user.bio} rows={8} placeholder="Short bio about you"></textarea>
+                  <textarea className="form-control form-control-lg" name="bio" defaultValue={user.bio ?? ""} rows={8} placeholder="Short bio about you"></textarea>
                 </fieldset>
                 <fieldset className="form-group">
                   <input className="form-control form-control-lg" type="text" name="email" defaultValue={user.email} placeholder="Email" />

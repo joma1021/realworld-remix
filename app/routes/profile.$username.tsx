@@ -60,7 +60,7 @@ export default function Profile() {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <img src={profile.image} className="user-img" />
+              <img src={profile.image ?? undefined} className="user-img" />
               <h4>{profile.username}</h4>
               <p>{profile.bio}</p>
 
