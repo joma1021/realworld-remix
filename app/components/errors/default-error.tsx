@@ -1,4 +1,4 @@
-import { Link, isRouteErrorResponse, useLocation, useRouteError } from "@remix-run/react";
+import { Link, isRouteErrorResponse, useLocation, useRouteError } from "react-router";
 
 export default function DefaultError() {
   const error = useRouteError();

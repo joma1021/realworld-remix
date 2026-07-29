@@ -1,5 +1,4 @@
-import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { type LoaderFunctionArgs, type MetaFunction, useLoaderData } from "react-router";
 import { useContext } from "react";
 import { getGlobalArticles, getTags, getYourArticles } from "~/services/article-service";
 import TagNavbar from "~/components/tag/tag-navbar";

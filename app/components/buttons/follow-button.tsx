@@ -1,4 +1,4 @@
-import { Form, useNavigation } from "@remix-run/react";
+import { Form, useNavigation } from "react-router";
 import type { AuthorData } from "~/models/author";
 
 export function FollowButton({ following, username }: { following: boolean; username: string }) {
