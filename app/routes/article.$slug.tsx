@@ -1,6 +1,5 @@
-import { redirect } from "@vercel/remix";
-import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { redirect, Form, Link, useLoaderData, useNavigation } from "react-router";
 import { useContext } from "react";
 import { validateInput } from "~/common/helpers";
 import { UserContext } from "~/components/auth/auth-provider";
@@ -93,7 +92,7 @@ export default function ArticleView() {
 
           <div className="article-meta">
             <Link prefetch="intent" to={`/profile/${article.author.username}`}>
-              <img src={article.author.image} />
+              <img src={article.author.image ?? undefined} />
             </Link>
 
             <div className="info">
@@ -139,7 +138,7 @@ export default function ArticleView() {
         <div className="article-actions">
           <div className="article-meta">
             <Link prefetch="intent" to={`/profile/${article.author.username}`}>
-              <img src={article.author.image} />
+              <img src={article.author.image ?? undefined} />
             </Link>
             <div className="info">
               <Link prefetch="intent" to={`/profile/${article.author.username}`} className="author">
@@ -170,7 +169,7 @@ export default function ArticleView() {
                   <textarea className="form-control" name="comment" placeholder="Write a comment..." rows={3}></textarea>
                 </div>
                 <div className="card-footer">
-                  <img src={userSession.image} className="comment-author-img" />
+                  <img src={userSession.image || undefined} className="comment-author-img" />
                   <button className="btn btn-sm btn-primary" type="submit" name="action" value="CREATE" disabled={navigation.state === "submitting"}>
                     Post Comment
                   </button>
@@ -197,7 +196,7 @@ export default function ArticleView() {
 
                 <div className="card-footer">
                   <Link to={`/profile/${comment.author.username}`} className="comment-author">
-                    <img src={comment.author.image} className="comment-author-img" />
+                    <img src={comment.author.image ?? undefined} className="comment-author-img" />
                   </Link>
                   &nbsp;
                   <Link to={`/profile/${comment.author.username}`} className="comment-author">

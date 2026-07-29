@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import type { ArticleData } from "~/models/article";
 import { FavoriteButtonSmall } from "../buttons/favorite-button";
 
@@ -7,7 +7,7 @@ export function ArticlePreview({ article }: { article: ArticleData }) {
     <div className="article-preview">
       <div className="article-meta">
         <Link to={`/profile/${article.author.username}`}>
-          <img src={`${article.author.image}`} />
+          <img src={article.author.image ?? undefined} />
         </Link>
         <div className="info">
           <Link to={`/profile/${article.author.username}`} className="author">

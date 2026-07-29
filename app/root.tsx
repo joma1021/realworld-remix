@@ -1,11 +1,12 @@
-import styles from "~/styles/global.css";
-import { redirect, type LinksFunction, type LoaderFunctionArgs } from "@vercel/remix";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import type { LinksFunction, LoaderFunctionArgs } from "react-router";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, redirect, useLoaderData } from "react-router";
+import styles from "~/styles/global.css?url";
 import { Layout } from "./components/layout/layout";
 import { getUserSessionData } from "./session.server";
 import { AuthProvider } from "./components/auth/auth-provider";
 
-export const links: LinksFunction = () => [...[{ rel: "stylesheet", href: styles }]];
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const userSessionData = await getUserSessionData(request);
@@ -45,7 +46,6 @@ export default function App() {
 
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from "@vercel/remix";
+import { createCookieSessionStorage, redirect } from "react-router";
 import type { UserData, UserSessionData } from "./models/user";
 
 const USERNAME_KEY = "username";
@@ -47,13 +47,13 @@ export async function createUserSession({
   request: Request;
   username: string;
   authToken: string;
-  image: string;
+  image?: string | null;
   redirectTo: string;
 }) {
   const session = await getSession(request);
   session.set(USERNAME_KEY, username);
   session.set(TOKEN_KEY, authToken);
-  session.set(IMAGE_KEY, image);
+  session.set(IMAGE_KEY, image ?? "");
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {

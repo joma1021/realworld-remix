@@ -1,6 +1,5 @@
-import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
-import { redirect } from "@vercel/remix";
-import { Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "@remix-run/react";
+import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { redirect, Link, isRouteErrorResponse, useLoaderData, useLocation, useRouteError } from "react-router";
 import { useContext } from "react";
 import { ArticlePreview } from "~/components/article/article-preview";
 import { UserContext } from "~/components/auth/auth-provider";
@@ -61,7 +60,7 @@ export default function Profile() {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <img src={profile.image} className="user-img" />
+              <img src={profile.image ?? undefined} className="user-img" />
               <h4>{profile.username}</h4>
               <p>{profile.bio}</p>
 

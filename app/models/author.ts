@@ -1,6 +1,6 @@
 export interface AuthorData {
-  image: string;
+  image: string | null;
   username: string;
   following: boolean;
-  bio: string;
+  bio: string | null;
 }
