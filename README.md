@@ -38,3 +38,9 @@ Make sure to deploy the output of `react-router build`:
 
 - `build/client/`
 - `build/server/`
+
+## Vercel
+
+This app is configured for Vercel via `@vercel/react-router` and `vercel.json` (`framework: "react-router"`).
+
+If an existing Vercel project was previously set to the **Remix** framework preset, change it to **React Router** (or leave detection to `vercel.json`) and redeploy.
