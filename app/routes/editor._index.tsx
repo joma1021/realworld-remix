@@ -1,6 +1,5 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
+import type { ActionFunctionArgs, MetaFunction } from "react-router";
+import { data, Form, redirect, useActionData, useNavigation } from "react-router";
 import { useState } from "react";
 import { validateInput } from "~/common/helpers";
 import DefaultError from "~/components/errors/default-error";
@@ -22,13 +21,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const tagList = tags.split(",");
 
   if (!validateInput(title)) {
-    return json({ errors: { "": ["title can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["title can't be blank"] } }, { status: 400 });
   }
   if (!validateInput(description)) {
-    return json({ errors: { "": ["description can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["description can't be blank"] } }, { status: 400 });
   }
   if (!validateInput(body)) {
-    return json({ errors: { "": ["body can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["body can't be blank"] } }, { status: 400 });
   }
 
   const editArticle: EditArticleData = {
@@ -39,12 +38,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   };
   const token = await getToken(request);
   const response = await createArticle(editArticle, token);
-  const data = await response.json();
+  const payload = await response.json();
 
   if (!response.ok) {
-    return json({ errors: data.errors }, { status: 400 });
+    return data({ errors: payload.errors }, { status: 400 });
   } else {
-    return redirect(`/article/${data.article.slug}`);
+    return redirect(`/article/${payload.article.slug}`);
   }
 };
 

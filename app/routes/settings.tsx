@@ -1,6 +1,5 @@
-import type { MetaFunction, LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "react-router";
+import { data, Form, useActionData, useLoaderData, useNavigation } from "react-router";
 import { validateInput } from "~/common/helpers";
 import DefaultError from "~/components/errors/default-error";
 import FormError from "~/components/errors/form-error";
@@ -28,15 +27,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const bio = formData.get("bio")?.toString() ?? "";
 
   if (!validateInput(email)) {
-    return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["email can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(image)) {
-    return json({ errors: { "": ["image can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["image can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(username)) {
-    return json({ errors: { "": ["username can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["username can't be blank"] } }, { status: 400 });
   }
   const user: UpdateUser = {
     username: username,
@@ -48,16 +47,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (validateInput(password)) user.password = password;
 
   const response = await updateUser(user, token);
-  const data = await response.json();
+  const payload = await response.json();
 
   if (!response.ok) {
-    return json({ errors: { "": ["unknown error"] } }, { status: 400 });
+    return data({ errors: { "": ["unknown error"] } }, { status: 400 });
   } else {
     return createUserSession({
       request: request,
-      username: data.user.username,
-      authToken: data.user.token,
-      image: data.user.image,
+      username: payload.user.username,
+      authToken: payload.user.token,
+      image: payload.user.image,
       redirectTo: "/",
     });
   }

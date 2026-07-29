@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { ActionFunctionArgs } from "react-router";
+import { redirect } from "react-router";
 import { favoriteArticle, unfavoriteArticle } from "~/services/article-service";
 import { getToken } from "~/session.server";
 

@@ -1,6 +1,5 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import type { ActionFunctionArgs, MetaFunction } from "react-router";
+import { data, Form, Link, useActionData, useNavigation } from "react-router";
 import { validateInput } from "~/common/helpers";
 import FormError from "~/components/errors/form-error";
 import type { RegisterCredentials } from "~/models/auth";
@@ -18,15 +17,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const username = formData.get("username")?.toString() ?? "";
 
   if (!validateInput(email)) {
-    return json({ errors: { "": ["email can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["email can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(password)) {
-    return json({ errors: { "": ["password can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["password can't be blank"] } }, { status: 400 });
   }
 
   if (!validateInput(username)) {
-    return json({ errors: { "": ["username can't be blank"] } }, { status: 400 });
+    return data({ errors: { "": ["username can't be blank"] } }, { status: 400 });
   }
   const credentials: RegisterCredentials = {
     username: username,
@@ -35,16 +34,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   };
 
   const response = await register(credentials);
-  const data = await response.json();
+  const payload = await response.json();
 
   if (!response.ok) {
-    return json({ errors: data.errors }, { status: 400 });
+    return data({ errors: payload.errors }, { status: 400 });
   } else {
     return createUserSession({
       request: request,
-      username: data.user.username,
-      authToken: data.user.token,
-      image: data.user.image,
+      username: payload.user.username,
+      authToken: payload.user.token,
+      image: payload.user.image,
       redirectTo: "/",
     });
   }
