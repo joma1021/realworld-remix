@@ -1,20 +1,14 @@
 # ![RealWorld Example App](logo.png)
 
-> ### [Remix](https://remix.run/) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
+> ### [React Router](https://reactrouter.com/) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
 
 ### [Demo](https://realworld-remix.vercel.app/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
 
-This codebase was created to demonstrate a frontend application built with [Remix](https://remix.run/) including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a frontend application built with [React Router](https://reactrouter.com/) (formerly Remix) including CRUD operations, authentication, routing, pagination, and more.
 
-We've gone to great lengths to adhere to the [Remix](https://remix.run/docs/en/1.19.3/pages/philosophy) community styleguides & best practices.
-
-For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
+For more information on how this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
 # Getting started
-
-## Welcome to Remix!
-
-- [Remix Docs](https://remix.run/docs)
 
 ## Development
 
@@ -40,13 +34,13 @@ Then run the app in production mode:
 npm start
 ```
 
-Now you'll need to pick a host to deploy it to.
+Make sure to deploy the output of `react-router build`:
 
-### DIY
+- `build/client/`
+- `build/server/`
 
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
+## Vercel
 
-Make sure to deploy the output of `remix build`
+This app is configured for Vercel via `@vercel/react-router` and `vercel.json` (`framework: "react-router"`).
 
-- `build/`
-- `public/build/`
+If an existing Vercel project was previously set to the **Remix** framework preset, change it to **React Router** (or leave detection to `vercel.json`) and redeploy.

@@ -1,4 +1,4 @@
-import { Form, useFetcher, useNavigation } from "@remix-run/react";
+import { Form, useFetcher, useNavigation } from "react-router";
 
 export function FavoriteButton({ favorite, favoritesCount }: { favorite: boolean; favoritesCount: number }) {
   const navigation = useNavigation();
@@ -25,7 +25,7 @@ export function FavoriteButtonSmall({ favorite, favoritesCount, slug }: { favori
 
   // NOTE: Optimistic UI -> update state directly without waiting for any response
   if (fetcher.state == "loading") {
-    const action = fetcher.formData.get("action")?.toString() ?? "";
+    const action = fetcher.formData?.get("action")?.toString() ?? "";
     if (action === `FAVORITE,${slug}`) {
       favorite = true;
       favoritesCount += 1;
